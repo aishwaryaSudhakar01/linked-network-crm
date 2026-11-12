@@ -91,11 +91,11 @@ function Index() {
         <section className="mt-10">
           <div className="mb-3 flex flex-wrap items-center gap-2 border-b border-border pb-3">
             <h2 className="mr-auto text-sm font-semibold text-muted-foreground">📇 All contacts · {filtered.length}</h2>
-            <input className={`${input} w-48`} placeholder="Search…" value={q} onChange={(e) => setQ(e.target.value)} />
-            <select className={`${input} w-auto`} value={rel} onChange={(e) => setRel(e.target.value)}>
+            <input className={input.replace("w-full", "w-48")} placeholder="Search…" value={q} onChange={(e) => setQ(e.target.value)} />
+            <select className={input.replace("w-full", "w-auto")} value={rel} onChange={(e) => setRel(e.target.value)}>
               <option value="">All relationships</option>{relOptions.map((r) => <option key={r}>{r}</option>)}
             </select>
-            <select className={`${input} w-auto`} value={src} onChange={(e) => setSrc(e.target.value)}>
+            <select className={input.replace("w-full", "w-auto")} value={src} onChange={(e) => setSrc(e.target.value)}>
               <option value="">All sources</option>{SOURCES.map((r) => <option key={r}>{r}</option>)}
             </select>
             <button className={btnPrimary} onClick={() => setEditing(blank())}>+ New</button>
