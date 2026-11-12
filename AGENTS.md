@@ -28,3 +28,4 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+- Contacts persist in browser localStorage via src/lib/contacts.ts (load/save + reminder rules); swap that module for Cloud if accounts are added — keeps the UI storage-agnostic.
