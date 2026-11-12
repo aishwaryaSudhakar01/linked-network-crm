@@ -163,30 +163,30 @@ function Profile({ c, onEdit, onLog, onDelete }: { c: Contact; onEdit: () => voi
         <Button variant="outline" className="h-10 rounded-md px-4" onClick={onEdit}><Pencil /> Edit</Button>
         {chat ? <Button asChild variant="link" className="h-10 px-2"><a href={chat} target="_blank" rel="noopener noreferrer">Open chat<ExternalLink /></a></Button> : <Button variant="link" className="h-10 px-2" onClick={onEdit}><ExternalLink /> Add chat link</Button>}
       </div>
-      <div className="grid gap-7 border-b border-border py-6 sm:grid-cols-2 sm:gap-8">
-        <div className="min-w-0 space-y-5 sm:border-r sm:border-border sm:pr-8">
+      <div className="-mx-6 grid sm:-mx-8 sm:grid-cols-[240px_minmax(0,1fr)]">
+        <div className="min-w-0 space-y-5 border-b border-border bg-muted px-6 py-6 sm:border-b-0 sm:border-r sm:px-7">
           <Field label="Email">{c.email}</Field>
           {c.phone && <Field label="Phone">{c.phone}</Field>}
           <Field label="LinkedIn">{linkedIn ? <a className="inline-flex items-center gap-2 text-primary underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring" href={linkedIn} target="_blank" rel="noopener noreferrer">View LinkedIn profile<ExternalLink className="size-3.5" /></a> : null}</Field>
-          <Field label="Where we met">{c.whereMet}</Field>
-        </div>
-        <div className="min-w-0 space-y-5">
           <Field label="Next check-in">{fmt(dueDate(c))}<span className="mt-1 block text-xs text-foreground/75">{c.nextCheckIn ? "Scheduled check-in" : `Every ${c.reconnectDays} days`}</span></Field>
+          <Field label="Where we met">{c.whereMet}</Field>
           <Field label="Interests">{c.interests}</Field>
-          <Field label="Next steps">{c.nextSteps}</Field>
         </div>
-      </div>
-      {c.projects && <div className="border-b border-border py-5"><Field label="Current projects">{c.projects}</Field></div>}
-      <div className="border-b border-border py-5"><Field label="Notes">{c.notes}</Field></div>
-      <div className="border-b border-border py-5">
-        <h4 className="mb-3 text-xs font-medium text-foreground/75">Conversations</h4>
+        <div className="min-w-0 px-6 py-6 sm:px-8">
+          <section className="border-b border-border pb-6"><h4 className="mb-3 text-sm font-semibold">Next steps</h4><p className="whitespace-pre-wrap">{c.nextSteps || "—"}</p></section>
+          <section className="border-b border-border py-6">
+        <h4 className="mb-4 text-sm font-semibold">Conversation history</h4>
         {c.interactions.length === 0 ? <p className="text-sm text-muted-foreground">No catch-ups logged yet.</p> : (
-          <ul className="space-y-4">{c.interactions.map((i) => (
-            <li key={i.id}><div className="flex flex-wrap items-center gap-2 text-xs text-foreground/75">{fmt(i.date)} <span aria-hidden="true">·</span> {i.source}</div><p className="mt-1.5 whitespace-pre-wrap">{i.note}</p></li>
+          <ul className="space-y-5">{c.interactions.map((i) => (
+            <li key={i.id} className="relative ml-1 border-l border-border pl-5"><span aria-hidden="true" className="absolute -left-1 top-1 size-2 rounded-full bg-muted-foreground" /><div className="flex flex-wrap items-center gap-2 text-xs text-foreground/75">{fmt(i.date)} <span aria-hidden="true">·</span> {i.source}</div><p className="mt-1.5 whitespace-pre-wrap">{i.note}</p></li>
           ))}</ul>
         )}
+          </section>
+          <section className="py-6"><h4 className="mb-3 text-sm font-semibold">Notes</h4><p className="whitespace-pre-wrap">{c.notes || "—"}</p></section>
+          {c.projects && <section className="border-t border-border py-5"><Field label="Current projects">{c.projects}</Field></section>}
+          <div className="border-t border-border pt-3"><Button variant="ghost" className="h-10 px-0 text-destructive hover:bg-transparent hover:text-destructive hover:underline" onClick={onDelete}>Delete contact</Button></div>
+        </div>
       </div>
-      <div className="pt-3"><Button variant="ghost" className="h-10 px-0 text-destructive hover:bg-transparent hover:text-destructive hover:underline" onClick={onDelete}>Delete contact</Button></div>
     </div>
   );
 }
@@ -194,7 +194,7 @@ function Profile({ c, onEdit, onLog, onDelete }: { c: Contact; onEdit: () => voi
 function Modal({ title, onClose, children, profile = false }: { title: string; onClose: () => void; children: React.ReactNode; profile?: boolean }) {
   return (
     <Dialog open onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
-      <DialogContent aria-describedby={undefined} className={`max-h-[85dvh] w-[calc(100%-2rem)] overflow-y-auto bg-card shadow-float ${profile ? "max-w-[760px] gap-2 rounded-lg p-6 sm:p-8" : "max-w-2xl rounded-2xl p-6 sm:p-7"}`}>
+      <DialogContent aria-describedby={undefined} className={`max-h-[85dvh] w-[calc(100%-2rem)] overflow-y-auto bg-card shadow-float ${profile ? "max-w-[860px] gap-2 rounded-lg p-6 pb-0 sm:p-8 sm:pb-0" : "max-w-2xl rounded-2xl p-6 sm:p-7"}`}>
         <DialogTitle className="pr-7 text-xl font-semibold leading-relaxed tracking-normal">{title}</DialogTitle>
         <div className="min-w-0 break-words">{children}</div>
       </DialogContent>
