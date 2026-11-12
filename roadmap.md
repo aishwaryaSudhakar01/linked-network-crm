@@ -1,2 +1,2 @@
-- [ ] Add editable, saved chat links to contact profiles.
-- [ ] Replace expanded rows with contact pop-ups and verify the flow.
+- [x] Add editable, saved chat links to contact profiles.
+- [x] Replace expanded rows with contact pop-ups and verify the flow.
