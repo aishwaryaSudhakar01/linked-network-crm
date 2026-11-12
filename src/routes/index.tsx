@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ExternalLink, MessageSquare } from "lucide-react";
+import { ExternalLink, MessageSquare, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
@@ -139,8 +139,8 @@ function Index() {
         </footer>
       </div>
 
-      {selected && !editing && !logging && <Modal title={selected.name} onClose={() => setOpen(null)}>
-        <p className="-mt-2 mb-5 text-sm text-muted-foreground">{[selected.title, selected.company].filter(Boolean).join(" · ")}</p>
+      {selected && !editing && !logging && <Modal title={selected.name} onClose={() => setOpen(null)} profile>
+        <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-2"><p className="text-sm leading-relaxed text-foreground/75">{[selected.title, selected.company].filter(Boolean).join(" · ")}</p><Tag label={selected.relationship} tone="green" /></div>
         <Profile c={selected} onEdit={() => setEditing(selected)} onLog={() => setLogging(selected)} onDelete={() => { if (confirm(`Delete ${selected.name}?`)) { setContacts((l) => l.filter((x) => x.id !== selected.id)); setOpen(null); } }} />
       </Modal>}
       {editing && <EditDialog c={editing} relOptions={relOptions} onClose={() => setEditing(null)} onSave={(c) => { upsert(c); setEditing(null); setOpen(c.id); }} />}
@@ -150,46 +150,52 @@ function Index() {
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><div className="text-xs text-muted-foreground">{label}</div><div className="whitespace-pre-wrap">{children || <span className="text-muted-foreground">—</span>}</div></div>;
+  return <div className="min-w-0"><div className="mb-1.5 text-xs font-medium leading-relaxed text-foreground/75">{label}</div><div className="whitespace-pre-wrap text-sm leading-relaxed [overflow-wrap:anywhere]">{children || <span className="text-muted-foreground">—</span>}</div></div>;
 }
 
 function Profile({ c, onEdit, onLog, onDelete }: { c: Contact; onEdit: () => void; onLog: () => void; onDelete: () => void }) {
+  const linkedIn = chatHref(c.linkedin?.startsWith("http") ? c.linkedin : c.linkedin ? `https://${c.linkedin}` : undefined);
+  const chat = chatHref(c.chatLink);
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-2">
-        <Button className={btnPrimary} onClick={onLog}><MessageSquare /> Log catch-up</Button>
-        <Button variant="outline" className={btn} onClick={onEdit}>Edit</Button>
-        <Button variant="ghost" className={`${btnGhost} ml-auto`} onClick={onDelete}>Delete</Button>
+    <div className="text-sm leading-relaxed">
+      <div className="flex flex-wrap items-center gap-3 border-b border-border pb-6">
+        <Button className="h-10 rounded-md px-4" onClick={onLog}><MessageSquare /> Log catch-up</Button>
+        <Button variant="outline" className="h-10 rounded-md px-4" onClick={onEdit}><Pencil /> Edit</Button>
+        {chat ? <Button asChild variant="link" className="h-10 px-2"><a href={chat} target="_blank" rel="noopener noreferrer">Open chat<ExternalLink /></a></Button> : <Button variant="link" className="h-10 px-2" onClick={onEdit}><ExternalLink /> Add chat link</Button>}
       </div>
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Field label="📧 Email">{c.email}</Field>
-        <Field label="📞 Phone">{c.phone}</Field>
-        <Field label="🔗 LinkedIn">{c.linkedin}</Field>
-        <Field label="Chat link">{chatHref(c.chatLink) ? <Button asChild variant="link" className="h-auto max-w-full justify-start whitespace-normal px-0"><a href={chatHref(c.chatLink)} target="_blank" rel="noopener noreferrer"><span className="break-all">Open conversation</span><ExternalLink /></a></Button> : null}</Field>
-        <Field label="📅 Next check-in">{fmt(dueDate(c))} {c.nextCheckIn ? "(scheduled)" : `(every ${c.reconnectDays} days)`}</Field>
-        <Field label="💡 Interests">{c.interests}</Field>
-        <Field label="🛠 Current projects">{c.projects}</Field>
-        <Field label="📍 Where we met">{c.whereMet}</Field>
-        <Field label="➡️ Next steps">{c.nextSteps}</Field>
-        <Field label="🧠 Brain dump">{c.notes}</Field>
+      <div className="grid gap-7 border-b border-border py-6 sm:grid-cols-2 sm:gap-8">
+        <div className="min-w-0 space-y-5 sm:border-r sm:border-border sm:pr-8">
+          <Field label="Email">{c.email}</Field>
+          {c.phone && <Field label="Phone">{c.phone}</Field>}
+          <Field label="LinkedIn">{linkedIn ? <a className="inline-flex items-center gap-2 text-primary underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring" href={linkedIn} target="_blank" rel="noopener noreferrer">View LinkedIn profile<ExternalLink className="size-3.5" /></a> : null}</Field>
+          <Field label="Where we met">{c.whereMet}</Field>
+        </div>
+        <div className="min-w-0 space-y-5">
+          <Field label="Next check-in">{fmt(dueDate(c))}<span className="mt-1 block text-xs text-foreground/75">{c.nextCheckIn ? "Scheduled check-in" : `Every ${c.reconnectDays} days`}</span></Field>
+          <Field label="Interests">{c.interests}</Field>
+          <Field label="Next steps">{c.nextSteps}</Field>
+        </div>
       </div>
-      <div>
-        <div className="mb-1 text-xs text-muted-foreground">💬 Conversations</div>
+      {c.projects && <div className="border-b border-border py-5"><Field label="Current projects">{c.projects}</Field></div>}
+      <div className="border-b border-border py-5"><Field label="Notes">{c.notes}</Field></div>
+      <div className="border-b border-border py-5">
+        <h4 className="mb-3 text-xs font-medium text-foreground/75">Conversations</h4>
         {c.interactions.length === 0 ? <p className="text-sm text-muted-foreground">No catch-ups logged yet.</p> : (
-          <ul className="space-y-2">{c.interactions.map((i) => (
-            <li key={i.id} className="rounded-xl border border-border bg-card p-3 shadow-sm"><div className="flex gap-2 text-xs text-muted-foreground">{fmt(i.date)} <Tag label={i.source} tone="gray" /></div><p className="mt-1 whitespace-pre-wrap">{i.note}</p></li>
+          <ul className="space-y-4">{c.interactions.map((i) => (
+            <li key={i.id}><div className="flex flex-wrap items-center gap-2 text-xs text-foreground/75">{fmt(i.date)} <span aria-hidden="true">·</span> {i.source}</div><p className="mt-1.5 whitespace-pre-wrap">{i.note}</p></li>
           ))}</ul>
         )}
       </div>
+      <div className="pt-3"><Button variant="ghost" className="h-10 px-0 text-destructive hover:bg-transparent hover:text-destructive hover:underline" onClick={onDelete}>Delete contact</Button></div>
     </div>
   );
 }
 
-function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
+function Modal({ title, onClose, children, profile = false }: { title: string; onClose: () => void; children: React.ReactNode; profile?: boolean }) {
   return (
     <Dialog open onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
-      <DialogContent aria-describedby={undefined} className="max-h-[85dvh] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto rounded-2xl bg-card p-6 shadow-float sm:p-7">
-        <DialogTitle className="pr-7 text-xl font-bold">{title}</DialogTitle>
+      <DialogContent aria-describedby={undefined} className={`max-h-[85dvh] w-[calc(100%-2rem)] overflow-y-auto bg-card shadow-float ${profile ? "max-w-[760px] gap-2 rounded-lg p-6 sm:p-8" : "max-w-2xl rounded-2xl p-6 sm:p-7"}`}>
+        <DialogTitle className="pr-7 text-xl font-semibold leading-relaxed tracking-normal">{title}</DialogTitle>
         <div className="min-w-0 break-words">{children}</div>
       </DialogContent>
     </Dialog>
