@@ -27,14 +27,14 @@ const tagCls: Record<string, string> = {
 };
 function color(label: string) { let h = 0; for (const ch of label) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return TAG[h % TAG.length] ?? "gray"; }
 function Tag({ label, tone }: { label: string; tone?: string }) {
-  return <span className={`inline-block rounded px-1.5 py-0.5 text-xs ${tagCls[tone ?? color(label)]}`}>{label}</span>;
+  return <span className={`inline-block rounded-full px-2 py-0.5 text-[11px] font-medium ${tagCls[tone ?? color(label)]}`}>{label}</span>;
 }
 const fmt = (d: string) => d ? new Date(d + "T00:00:00").toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "—";
 function dueLabel(c: Contact) { const n = daysUntil(dueDate(c)); return n < 0 ? `${-n}d overdue` : n === 0 ? "Today" : `in ${n}d`; }
 
-const input = "w-full rounded border border-input bg-background px-2 py-1.5 text-sm outline-none focus:ring-2 focus:ring-ring/40";
-const btn = "rounded px-3 py-1.5 text-sm transition-colors";
-const btnPrimary = `${btn} bg-primary text-primary-foreground hover:opacity-90`;
+const input = "w-full rounded-lg border border-input bg-card px-3 py-2 text-sm shadow-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-ring/15";
+const btn = "rounded-full px-4 py-2 text-sm font-medium transition-all";
+const btnPrimary = `${btn} bg-primary text-primary-foreground shadow-card hover:-translate-y-px hover:shadow-float`;
 const btnGhost = `${btn} text-muted-foreground hover:bg-accent`;
 
 function blank(): Contact {
@@ -64,33 +64,38 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-5xl px-6 py-12">
-        <div className="text-5xl">🤝</div>
-        <h1 className="mt-3 font-serif text-4xl font-bold">Kindred</h1>
-        <p className="mt-1 text-muted-foreground">Everyone I've spoken with — and when to say hello again.</p>
+      <div className="relative overflow-hidden">
+        <div className="bg-mesh absolute inset-x-0 -top-40 h-[30rem] origin-top-left -skew-y-6 opacity-90" />
+        <div className="relative mx-auto max-w-5xl px-6 pb-24 pt-16 text-primary-foreground">
+          <div className="text-sm font-semibold tracking-wide opacity-90">KINDRED</div>
+          <h1 className="mt-4 max-w-2xl text-5xl font-extrabold leading-[1.05] tracking-tight">Every conversation,<br />remembered.</h1>
+          <p className="mt-4 max-w-lg text-lg opacity-90">Everyone you've spoken with — and the right moment to say hello again.</p>
+        </div>
+      </div>
+      <div className="relative mx-auto -mt-16 max-w-5xl px-6 pb-16">
 
-        <section className="mt-10">
-          <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold text-muted-foreground">⏰ Reach out soon <span className="font-normal">· {soon.length}</span></h2>
-          {soon.length === 0 ? <p className="rounded border border-border bg-muted p-4 text-sm text-muted-foreground">You're all caught up. 🌿</p> : (
-            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="rounded-2xl bg-card p-6 shadow-float">
+          <h2 className="mb-4 flex items-center gap-2 text-base font-semibold">Reach out soon <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-semibold text-primary">{soon.length}</span></h2>
+          {soon.length === 0 ? <p className="rounded-xl bg-muted p-6 text-center text-sm text-muted-foreground">You're all caught up. 🌿</p> : (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {soon.map((c) => (
-                <div key={c.id} className="rounded-md border border-border bg-card p-3 shadow-sm">
+                <div key={c.id} className="group rounded-xl border border-border bg-gradient-to-b from-card to-muted p-4 transition hover:-translate-y-0.5 hover:shadow-card">
                   <div className="flex items-start justify-between gap-2">
-                    <button className="text-left font-medium hover:underline" onClick={() => setOpen(c.id)}>{c.name}</button>
+                    <button className="text-left font-semibold hover:text-primary" onClick={() => setOpen(c.id)}>{c.name}</button>
                     <Tag label={dueLabel(c)} tone={daysUntil(dueDate(c)) < 0 ? "red" : "yellow"} />
                   </div>
                   <p className="text-xs text-muted-foreground">{c.title}{c.company && ` · ${c.company}`}</p>
-                  {c.nextSteps && <p className="mt-2 text-sm">→ {c.nextSteps}</p>}
-                  <button className={`${btnGhost} mt-2 -ml-2 px-2 py-1 text-xs`} onClick={() => setLogging(c)}>✍️ Log catch-up</button>
+                  {c.nextSteps && <p className="mt-3 text-sm text-foreground/80">{c.nextSteps}</p>}
+                  <button className={`mt-3 text-xs font-semibold text-primary hover:underline`} onClick={() => setLogging(c)}>Log catch-up →</button>
                 </div>
               ))}
             </div>
           )}
         </section>
 
-        <section className="mt-10">
-          <div className="mb-3 flex flex-wrap items-center gap-2 border-b border-border pb-3">
-            <h2 className="mr-auto text-sm font-semibold text-muted-foreground">📇 All contacts · {filtered.length}</h2>
+        <section className="mt-8 rounded-2xl bg-card p-6 shadow-card">
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <h2 className="mr-auto flex items-center gap-2 text-base font-semibold">All contacts <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">{filtered.length}</span></h2>
             <input className={input.replace("w-full", "w-48")} placeholder="Search…" value={q} onChange={(e) => setQ(e.target.value)} />
             <select className={input.replace("w-full", "w-auto")} value={rel} onChange={(e) => setRel(e.target.value)}>
               <option value="">All relationships</option>{relOptions.map((r) => <option key={r}>{r}</option>)}
@@ -103,14 +108,14 @@ function Index() {
 
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead><tr className="text-left text-xs text-muted-foreground">
+              <thead><tr className="text-left text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 <th className="py-2 pr-3 font-normal">Name</th><th className="pr-3 font-normal">Organization</th><th className="pr-3 font-normal">Tags</th><th className="pr-3 font-normal">Where we met</th><th className="pr-3 font-normal">Last contact</th><th className="font-normal">Next</th>
               </tr></thead>
               <tbody>
                 {filtered.map((c) => (
                   <Fragment key={c.id}>
-                    <tr key={c.id} className="cursor-pointer border-t border-border hover:bg-muted" onClick={() => setOpen(open === c.id ? null : c.id)}>
-                      <td className="py-2 pr-3 font-medium">{open === c.id ? "▾" : "▸"} {c.name}</td>
+                    <tr key={c.id} className="cursor-pointer border-t border-border transition-colors hover:bg-accent/50" onClick={() => setOpen(open === c.id ? null : c.id)}>
+                      <td className="py-3 pr-3 font-semibold"><span className="mr-1 text-muted-foreground">{open === c.id ? "▾" : "▸"}</span>{c.name}</td>
                       <td className="pr-3">{c.company}<div className="text-xs text-muted-foreground">{c.title}</div></td>
                       <td className="pr-3"><div className="flex flex-wrap gap-1"><Tag label={c.relationship} />{c.sources.map((s) => <Tag key={s} label={s} tone="gray" />)}</div></td>
                       <td className="pr-3 text-muted-foreground">{c.whereMet}</td>
@@ -118,7 +123,7 @@ function Index() {
                       <td className="whitespace-nowrap text-muted-foreground">{dueLabel(c)}</td>
                     </tr>
                     {open === c.id && (
-                      <tr key={c.id + "x"}><td colSpan={6} className="bg-muted p-4"><Profile c={c} onEdit={() => setEditing(c)} onLog={() => setLogging(c)} onDelete={() => { if (confirm(`Delete ${c.name}?`)) setContacts((l) => l.filter((x) => x.id !== c.id)); }} /></td></tr>
+                      <tr key={c.id + "x"}><td colSpan={6} className="rounded-xl bg-muted p-5"><Profile c={c} onEdit={() => setEditing(c)} onLog={() => setLogging(c)} onDelete={() => { if (confirm(`Delete ${c.name}?`)) setContacts((l) => l.filter((x) => x.id !== c.id)); }} /></td></tr>
                     )}
                   </Fragment>
                 ))}
@@ -128,8 +133,8 @@ function Index() {
           </div>
         </section>
 
-        <footer className="mt-12 rounded-md border border-border bg-muted p-4 text-xs text-muted-foreground">
-          🔒 Contacts are saved only in this browser on this device — nothing is sent anywhere, and reminders stay inside the app.
+        <footer className="mt-8 px-2 text-center text-xs text-muted-foreground">
+          Contacts are saved only in this browser on this device — nothing is sent anywhere, and reminders stay inside the app.
           <button className="ml-2 underline" onClick={() => { if (confirm("Replace everything with sample data?")) setContacts(sampleContacts()); }}>Reset sample data</button>
           <button className="ml-2 underline" onClick={() => { if (confirm("Remove all contacts?")) setContacts([]); }}>Clear all</button>
         </footer>
@@ -150,7 +155,7 @@ function Profile({ c, onEdit, onLog, onDelete }: { c: Contact; onEdit: () => voi
     <div className="space-y-4">
       <div className="flex flex-wrap gap-2">
         <button className={btnPrimary} onClick={onLog}>✍️ Log catch-up</button>
-        <button className={`${btn} border border-border bg-background hover:bg-accent`} onClick={onEdit}>Edit</button>
+        <button className={`${btn} border border-border bg-card shadow-sm hover:bg-accent`} onClick={onEdit}>Edit</button>
         <button className={`${btnGhost} ml-auto`} onClick={onDelete}>Delete</button>
       </div>
       <div className="grid gap-4 sm:grid-cols-3">
@@ -168,7 +173,7 @@ function Profile({ c, onEdit, onLog, onDelete }: { c: Contact; onEdit: () => voi
         <div className="mb-1 text-xs text-muted-foreground">💬 Conversations</div>
         {c.interactions.length === 0 ? <p className="text-sm text-muted-foreground">No catch-ups logged yet.</p> : (
           <ul className="space-y-2">{c.interactions.map((i) => (
-            <li key={i.id} className="rounded border border-border bg-background p-2"><div className="flex gap-2 text-xs text-muted-foreground">{fmt(i.date)} <Tag label={i.source} tone="gray" /></div><p className="mt-1 whitespace-pre-wrap">{i.note}</p></li>
+            <li key={i.id} className="rounded-xl border border-border bg-card p-3 shadow-sm"><div className="flex gap-2 text-xs text-muted-foreground">{fmt(i.date)} <Tag label={i.source} tone="gray" /></div><p className="mt-1 whitespace-pre-wrap">{i.note}</p></li>
           ))}</ul>
         )}
       </div>
@@ -178,9 +183,9 @@ function Profile({ c, onEdit, onLog, onDelete }: { c: Contact; onEdit: () => voi
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/30 p-4" onClick={onClose}>
-      <div className="my-8 w-full max-w-xl rounded-lg bg-card p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
-        <h3 className="mb-4 font-serif text-xl font-semibold">{title}</h3>{children}
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/30 p-4 backdrop-blur-sm" onClick={onClose}>
+      <div className="my-8 w-full max-w-xl rounded-2xl bg-card p-7 shadow-float" onClick={(e) => e.stopPropagation()}>
+        <h3 className="mb-5 text-xl font-bold tracking-tight">{title}</h3>{children}
       </div>
     </div>
   );
@@ -209,7 +214,7 @@ function EditDialog({ c, relOptions, onClose, onSave }: { c: Contact; relOptions
         <div className="text-xs text-muted-foreground">Conversation source
           <div className="mt-1 flex flex-wrap gap-1">{SOURCES.map((s) => {
             const on = f.sources.includes(s);
-            return <button type="button" key={s} onClick={() => set("sources", on ? f.sources.filter((x) => x !== s) : [...f.sources, s])} className={`rounded px-2 py-1 text-xs ${on ? tagCls["blue"] : "border border-border"}`}>{s}</button>;
+            return <button type="button" key={s} onClick={() => set("sources", on ? f.sources.filter((x) => x !== s) : [...f.sources, s])} className={`rounded-full px-3 py-1 text-xs font-medium transition ${on ? "bg-primary text-primary-foreground" : "border border-border hover:bg-accent"}`}>{s}</button>;
           })}</div>
         </div>
         <div className="grid grid-cols-3 gap-3">
