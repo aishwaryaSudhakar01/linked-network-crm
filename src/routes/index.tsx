@@ -66,10 +66,10 @@ function Index() {
     <div className="min-h-screen bg-background">
       <div className="relative overflow-hidden">
         <div className="bg-mesh absolute inset-x-0 -top-40 h-[30rem] origin-top-left -skew-y-6 opacity-90" />
-        <div className="relative mx-auto max-w-5xl px-6 pb-24 pt-16 text-primary-foreground">
-          <div className="text-sm font-semibold tracking-wide opacity-90">KINDRED</div>
+        <div className="relative mx-auto max-w-5xl px-6 pb-24 pt-16 text-foreground">
+          <div className="text-sm font-semibold tracking-wide text-muted-foreground">KINDRED</div>
           <h1 className="mt-4 max-w-2xl text-5xl font-extrabold leading-[1.05] tracking-tight">Every conversation,<br />remembered.</h1>
-          <p className="mt-4 max-w-lg text-lg opacity-90">Everyone you've spoken with — and the right moment to say hello again.</p>
+          <p className="mt-4 max-w-lg text-lg text-muted-foreground">Everyone you've spoken with — and the right moment to say hello again.</p>
         </div>
       </div>
       <div className="relative mx-auto -mt-16 max-w-5xl px-6 pb-16">
