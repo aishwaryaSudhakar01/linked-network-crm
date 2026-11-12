@@ -29,3 +29,5 @@ use the editor.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
 - Contacts persist in browser localStorage via src/lib/contacts.ts (load/save + reminder rules); swap that module for Cloud if accounts are added — keeps the UI storage-agnostic.
+- Contact details use the shared accessible dialog rather than inline expansion, so editing and catch-up flows retain a consistent dismissible pop-up.
+- Optional chat links support existing stored contacts; allow only HTTP(S) navigation to prevent executable URL schemes.

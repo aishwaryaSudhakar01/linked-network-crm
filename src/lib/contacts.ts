@@ -5,6 +5,7 @@ export type Contact = {
   email: string;
   phone: string;
   linkedin: string;
+  chatLink?: string;
   company: string;
   title: string;
   relationship: string;
@@ -62,6 +63,13 @@ export const sampleContacts = (): Contact[] => [
 ];
 
 const KEY = "kindred.contacts.v1";
+export function chatHref(link: string | undefined): string | undefined {
+  if (!link) return undefined;
+  try {
+    const url = new URL(link);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.href : undefined;
+  } catch { return undefined; }
+}
 export function loadContacts(): Contact[] {
   try { const r = localStorage.getItem(KEY); if (r) return JSON.parse(r); } catch {}
   return sampleContacts();
