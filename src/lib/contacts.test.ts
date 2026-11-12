@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { dueDate, reachOutSoon, logCatchUp, sampleContacts } from "./contacts";
-const base = { ...sampleContacts()[0], lastContact: "2026-01-01", reconnectDays: 30, nextCheckIn: "" };
+import { type Contact, dueDate, reachOutSoon, logCatchUp, sampleContacts } from "./contacts";
+const base: Contact = { ...sampleContacts()[0]!, lastContact: "2026-01-01", reconnectDays: 30, nextCheckIn: "" };
 describe("reconnect rules", () => {
   it("uses each contact's own reconnect days", () => expect(dueDate(base)).toBe("2026-01-31"));
   it("scheduled check-in overrides default timing", () => expect(dueDate({ ...base, nextCheckIn: "2026-01-10" })).toBe("2026-01-10"));

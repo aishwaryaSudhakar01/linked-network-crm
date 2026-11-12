@@ -25,7 +25,7 @@ const tagCls: Record<string, string> = {
   purple: "bg-tag-purple text-tag-purple-fg", pink: "bg-tag-pink text-tag-pink-fg", yellow: "bg-tag-yellow text-tag-yellow-fg",
   brown: "bg-tag-brown text-tag-brown-fg", red: "bg-tag-red text-tag-red-fg", gray: "bg-tag-gray text-tag-gray-fg",
 };
-function color(label: string) { let h = 0; for (const ch of label) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return TAG[h % TAG.length]; }
+function color(label: string) { let h = 0; for (const ch of label) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return TAG[h % TAG.length] ?? "gray"; }
 function Tag({ label, tone }: { label: string; tone?: string }) {
   return <span className={`inline-block rounded px-1.5 py-0.5 text-xs ${tagCls[tone ?? color(label)]}`}>{label}</span>;
 }
@@ -209,7 +209,7 @@ function EditDialog({ c, relOptions, onClose, onSave }: { c: Contact; relOptions
         <div className="text-xs text-muted-foreground">Conversation source
           <div className="mt-1 flex flex-wrap gap-1">{SOURCES.map((s) => {
             const on = f.sources.includes(s);
-            return <button type="button" key={s} onClick={() => set("sources", on ? f.sources.filter((x) => x !== s) : [...f.sources, s])} className={`rounded px-2 py-1 text-xs ${on ? tagCls.blue : "border border-border"}`}>{s}</button>;
+            return <button type="button" key={s} onClick={() => set("sources", on ? f.sources.filter((x) => x !== s) : [...f.sources, s])} className={`rounded px-2 py-1 text-xs ${on ? tagCls["blue"] : "border border-border"}`}>{s}</button>;
           })}</div>
         </div>
         <div className="grid grid-cols-3 gap-3">
