@@ -1,6 +1,21 @@
 import { describe, it, expect } from "vitest";
-import { type Contact, dueDate, reachOutSoon, logCatchUp, sampleContacts } from "./contacts";
-const base: Contact = { ...sampleContacts()[0]!, lastContact: "2026-01-01", reconnectDays: 30, nextCheckIn: "" };
+import { type Contact, dueDate, reachOutSoon, logCatchUp, sampleContacts, chatHref, loadContacts, saveContacts } from "./contacts";
+const sample = sampleContacts()[0];
+if (!sample) throw new Error("Sample contact missing");
+const base: Contact = { ...sample, lastContact: "2026-01-01", reconnectDays: 30, nextCheckIn: "" };
+describe("contact chat links", () => {
+  it("saves and reloads the exact LinkedIn conversation URL", () => {
+    const chatLink = "https://www.linkedin.com/messaging/thread/abc123/?detail=hello";
+    saveContacts([{ ...base, chatLink }]);
+    expect(loadContacts()[0]?.chatLink).toBe(chatLink);
+    localStorage.clear();
+  });
+  it("preserves a Gmail thread URL", () => {
+    expect(chatHref("https://mail.google.com/mail/u/0/#inbox/abc123")).toBe("https://mail.google.com/mail/u/0/#inbox/abc123");
+  });
+  it("accepts old contacts without a chat link", () => expect(chatHref(base.chatLink)).toBeUndefined());
+  it("rejects executable links", () => expect(chatHref("javascript:alert(1)")).toBeUndefined());
+});
 describe("reconnect rules", () => {
   it("uses each contact's own reconnect days", () => expect(dueDate(base)).toBe("2026-01-31"));
   it("scheduled check-in overrides default timing", () => expect(dueDate({ ...base, nextCheckIn: "2026-01-10" })).toBe("2026-01-10"));

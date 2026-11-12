@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { ExternalLink, MessageSquare } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
   type Contact, RELATIONSHIPS, SOURCES, dueDate, daysUntil, reachOutSoon, logCatchUp,
-  loadContacts, saveContacts, sampleContacts, today,
+  loadContacts, saveContacts, sampleContacts, today, chatHref,
 } from "@/lib/contacts";
 
 export const Route = createFileRoute("/")({
@@ -61,6 +64,7 @@ function Index() {
     return (!q || hay.includes(q.toLowerCase())) && (!rel || c.relationship === rel) && (!src || c.sources.includes(src));
   }).sort((a, b) => b.lastContact.localeCompare(a.lastContact));
   const soon = reachOutSoon(contacts);
+  const selected = contacts.find((c) => c.id === open);
 
   return (
     <div className="min-h-screen bg-background">
@@ -81,7 +85,7 @@ function Index() {
               {soon.map((c) => (
                 <div key={c.id} className="group rounded-xl border border-border bg-gradient-to-b from-card to-muted p-4 transition hover:-translate-y-0.5 hover:shadow-card">
                   <div className="flex items-start justify-between gap-2">
-                    <button className="text-left font-semibold hover:text-primary" onClick={() => setOpen(c.id)}>{c.name}</button>
+                    <Button variant="link" className="h-auto whitespace-normal p-0 text-left font-semibold text-foreground hover:text-primary" onClick={() => setOpen(c.id)}>{c.name}</Button>
                     <Tag label={dueLabel(c)} tone={daysUntil(dueDate(c)) < 0 ? "red" : "yellow"} />
                   </div>
                   <p className="text-xs text-muted-foreground">{c.title}{c.company && ` · ${c.company}`}</p>
@@ -113,19 +117,14 @@ function Index() {
               </tr></thead>
               <tbody>
                 {filtered.map((c) => (
-                  <Fragment key={c.id}>
-                    <tr key={c.id} className="cursor-pointer border-t border-border transition-colors hover:bg-accent/50" onClick={() => setOpen(open === c.id ? null : c.id)}>
-                      <td className="py-3 pr-3 font-semibold"><span className="mr-1 text-muted-foreground">{open === c.id ? "▾" : "▸"}</span>{c.name}</td>
+                    <tr key={c.id} className="cursor-pointer border-t border-border transition-colors hover:bg-accent/50" onClick={() => setOpen(c.id)}>
+                      <td className="py-3 pr-3 font-semibold"><Button variant="link" className="h-auto whitespace-normal p-0 text-left font-semibold text-foreground" onClick={(e) => { e.stopPropagation(); setOpen(c.id); }}>{c.name}</Button></td>
                       <td className="pr-3">{c.company}<div className="text-xs text-muted-foreground">{c.title}</div></td>
                       <td className="pr-3"><div className="flex flex-wrap gap-1"><Tag label={c.relationship} />{c.sources.map((s) => <Tag key={s} label={s} tone="gray" />)}</div></td>
                       <td className="pr-3 text-muted-foreground">{c.whereMet}</td>
                       <td className="whitespace-nowrap pr-3">{fmt(c.lastContact)}</td>
                       <td className="whitespace-nowrap text-muted-foreground">{dueLabel(c)}</td>
                     </tr>
-                    {open === c.id && (
-                      <tr key={c.id + "x"}><td colSpan={6} className="rounded-xl bg-muted p-5"><Profile c={c} onEdit={() => setEditing(c)} onLog={() => setLogging(c)} onDelete={() => { if (confirm(`Delete ${c.name}?`)) setContacts((l) => l.filter((x) => x.id !== c.id)); }} /></td></tr>
-                    )}
-                  </Fragment>
                 ))}
               </tbody>
             </table>
@@ -140,6 +139,10 @@ function Index() {
         </footer>
       </div>
 
+      {selected && !editing && !logging && <Modal title={selected.name} onClose={() => setOpen(null)}>
+        <p className="-mt-2 mb-5 text-sm text-muted-foreground">{[selected.title, selected.company].filter(Boolean).join(" · ")}</p>
+        <Profile c={selected} onEdit={() => setEditing(selected)} onLog={() => setLogging(selected)} onDelete={() => { if (confirm(`Delete ${selected.name}?`)) { setContacts((l) => l.filter((x) => x.id !== selected.id)); setOpen(null); } }} />
+      </Modal>}
       {editing && <EditDialog c={editing} relOptions={relOptions} onClose={() => setEditing(null)} onSave={(c) => { upsert(c); setEditing(null); setOpen(c.id); }} />}
       {logging && <LogDialog c={logging} onClose={() => setLogging(null)} onSave={(c) => { upsert(c); setLogging(null); }} />}
     </div>
@@ -154,14 +157,15 @@ function Profile({ c, onEdit, onLog, onDelete }: { c: Contact; onEdit: () => voi
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-2">
-        <button className={btnPrimary} onClick={onLog}>✍️ Log catch-up</button>
-        <button className={`${btn} border border-border bg-card shadow-sm hover:bg-accent`} onClick={onEdit}>Edit</button>
-        <button className={`${btnGhost} ml-auto`} onClick={onDelete}>Delete</button>
+        <Button className={btnPrimary} onClick={onLog}><MessageSquare /> Log catch-up</Button>
+        <Button variant="outline" className={btn} onClick={onEdit}>Edit</Button>
+        <Button variant="ghost" className={`${btnGhost} ml-auto`} onClick={onDelete}>Delete</Button>
       </div>
       <div className="grid gap-4 sm:grid-cols-3">
         <Field label="📧 Email">{c.email}</Field>
         <Field label="📞 Phone">{c.phone}</Field>
         <Field label="🔗 LinkedIn">{c.linkedin}</Field>
+        <Field label="Chat link">{chatHref(c.chatLink) ? <Button asChild variant="link" className="h-auto max-w-full justify-start whitespace-normal px-0"><a href={chatHref(c.chatLink)} target="_blank" rel="noopener noreferrer"><span className="break-all">Open conversation</span><ExternalLink /></a></Button> : null}</Field>
         <Field label="📅 Next check-in">{fmt(dueDate(c))} {c.nextCheckIn ? "(scheduled)" : `(every ${c.reconnectDays} days)`}</Field>
         <Field label="💡 Interests">{c.interests}</Field>
         <Field label="🛠 Current projects">{c.projects}</Field>
@@ -183,11 +187,12 @@ function Profile({ c, onEdit, onLog, onDelete }: { c: Contact; onEdit: () => voi
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/30 p-4 backdrop-blur-sm" onClick={onClose}>
-      <div className="my-8 w-full max-w-xl rounded-2xl bg-card p-7 shadow-float" onClick={(e) => e.stopPropagation()}>
-        <h3 className="mb-5 text-xl font-bold tracking-tight">{title}</h3>{children}
-      </div>
-    </div>
+    <Dialog open onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
+      <DialogContent aria-describedby={undefined} className="max-h-[85dvh] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto rounded-2xl bg-card p-6 shadow-float sm:p-7">
+        <DialogTitle className="pr-7 text-xl font-bold">{title}</DialogTitle>
+        <div className="min-w-0 break-words">{children}</div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -205,6 +210,9 @@ function EditDialog({ c, relOptions, onClose, onSave }: { c: Contact; relOptions
     <Modal title={c.name ? `Edit ${c.name}` : "New contact"} onClose={onClose}>
       <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); if (f.name.trim()) onSave(f); }}>
         <div className="grid grid-cols-2 gap-3">{txt("name", "Name *")}{txt("email", "Email")}{txt("company", "Company")}{txt("title", "Title")}{txt("phone", "Phone")}{txt("linkedin", "LinkedIn")}</div>
+        <label className="block text-xs text-muted-foreground">Chat link
+          <input type="url" pattern="https?://.*" className={`${input} mt-1`} placeholder="https://…" value={f.chatLink ?? ""} onChange={(e) => set("chatLink", e.target.value)} />
+        </label>
         <label className="block text-xs text-muted-foreground">How do I know them
           {custom ? <input className={`${input} mt-1`} placeholder="Type your own…" value={f.relationship} onChange={(e) => set("relationship", e.target.value)} /> : (
             <select className={`${input} mt-1`} value={f.relationship} onChange={(e) => e.target.value === "__custom" ? (setCustom(true), set("relationship", "")) : set("relationship", e.target.value)}>
