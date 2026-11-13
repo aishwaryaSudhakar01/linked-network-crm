@@ -155,3 +155,5 @@
  --tag-red: oklch(0.3 0.035 25); --tag-red-fg: oklch(0.8 0.06 25);
 }
 @layer base { * { letter-spacing: 0; } input[type=checkbox] { accent-color: var(--primary); } }
+.dark { --sidebar-accent: var(--accent); --sidebar-accent-foreground: var(--foreground); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
