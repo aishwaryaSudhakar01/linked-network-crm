@@ -1,0 +1,4 @@
+import {useState,type InputHTMLAttributes} from 'react';
+import {Eye,EyeOff} from 'lucide-react';
+import {inputClass} from './shared';
+export function PasswordInput(props:Omit<InputHTMLAttributes<HTMLInputElement>,'type'|'className'>){const [shown,setShown]=useState(false);return <div className="relative"><input {...props} type={shown?'text':'password'} className={`${inputClass} pr-10`}/><button type="button" aria-label={shown?'Hide password':'Show password'} title={shown?'Hide password':'Show password'} onClick={()=>setShown(v=>!v)} className="absolute inset-y-0 right-0 flex w-10 items-center justify-center rounded-r-md text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30">{shown?<EyeOff className="size-4"/>:<Eye className="size-4"/>}</button></div>;}
