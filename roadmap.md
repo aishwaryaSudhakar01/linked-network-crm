@@ -4,4 +4,5 @@
 - [x] Phase 1: named accounts, onboarding/encryption, contacts/home/pipeline, CSV/dedupe, templates/messaging, settings, feedback/admin, and rule tests. Verified signed-in workflows and 24 tests against connected Cloud.
 - [ ] Assign the designated admin — waiting for confirmation that the account exists.
 - [ ] Verify confirmation and password-recovery email round trips — requires a real recipient; test accounts used reserved addresses.
-- [ ] Phase 2: Calendar sync and PostHog — blocked until explicit go-ahead and analytics token/host.
+- [ ] Phase 2: Calendar sync and PostHog — blocked until explicit go-ahead and analytics token/host.- [ ] Interface redesign (sidebar, command palette, Home dashboard, dense contacts table, contact page inline editing, Geist/Instrument Serif) — no logic changes.
+- [ ] Per-user Google Calendar: connect/disconnect, Meetings page, auto-sync logging, post-meeting notes, scheduling.
