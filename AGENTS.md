@@ -35,3 +35,5 @@ use the editor.
 - Optional chat links support existing stored contacts; allow only HTTP(S) navigation to prevent executable URL schemes.
 
 - Network UI modules share account/encryption context at the root; clear the key and query cache on sign-out to avoid retaining private state.
+- Network screens are split per view (home.tsx, directory.tsx, pipeline.tsx, contact-view.tsx) with shared primitives in ui-kit.tsx; workspace.tsx owns the shell, shortcuts, command palette, and save/undo, so views stay presentational.
+- Contact inline edits merge into a ref of the latest edited copy, because back-to-back saves otherwise overwrite each other with stale data.
