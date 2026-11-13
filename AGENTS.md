@@ -28,6 +28,10 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
-- Contacts persist in browser localStorage via src/lib/contacts.ts (load/save + reminder rules); swap that module for Cloud if accounts are added — keeps the UI storage-agnostic.
+- Use browser Cloud queries with owner-scoped RLS and the network-store module for persistence; seal sensitive contact fields with the in-memory key before writes.
+- Keep account names/preferences in profiles and admin roles in user_roles; database authorization protects feedback review and aggregate counts.
+- Protected screens live under the client-only authenticated layout; the root redirects to account or Home without a landing page.
 - Contact details use the shared accessible dialog rather than inline expansion, so editing and catch-up flows retain a consistent dismissible pop-up.
 - Optional chat links support existing stored contacts; allow only HTTP(S) navigation to prevent executable URL schemes.
+
+- Network UI modules share account/encryption context at the root; clear the key and query cache on sign-out to avoid retaining private state.

@@ -73,14 +73,14 @@
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.5rem;
   --background: oklch(0.985 0.002 90);
   --foreground: oklch(0.31 0.01 80);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.31 0.01 80);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.31 0.01 80);
-  --primary: oklch(0.6 0.13 245);
+  --primary: oklch(0.513 0.098 164);
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.975 0.002 90);
   --secondary-foreground: oklch(0.31 0.01 80);
@@ -92,9 +92,9 @@
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.925 0.003 90);
   --input: oklch(0.9 0.003 90);
-  --ring: oklch(0.6 0.13 245);
+  --ring: oklch(0.513 0.098 164);
   --chart-1: oklch(0.65 0.15 50); --chart-2: oklch(0.6 0.1 160); --chart-3: oklch(0.5 0.08 245); --chart-4: oklch(0.8 0.13 85); --chart-5: oklch(0.6 0.12 350);
-  --sidebar: oklch(0.975 0.003 90); --sidebar-foreground: oklch(0.31 0.01 80); --sidebar-primary: oklch(0.6 0.13 245); --sidebar-primary-foreground: oklch(1 0 0); --sidebar-accent: oklch(0.94 0.003 90); --sidebar-accent-foreground: oklch(0.31 0.01 80); --sidebar-border: oklch(0.925 0.003 90); --sidebar-ring: oklch(0.6 0.13 245);
+  --sidebar: oklch(0.975 0.003 90); --sidebar-foreground: oklch(0.31 0.01 80); --sidebar-primary: oklch(0.513 0.098 164); --sidebar-primary-foreground: oklch(1 0 0); --sidebar-accent: oklch(0.94 0.003 90); --sidebar-accent-foreground: oklch(0.31 0.01 80); --sidebar-border: oklch(0.925 0.003 90); --sidebar-ring: oklch(0.513 0.098 164);
   /* Notion tag palette */
   --tag-gray: oklch(0.94 0.003 90); --tag-gray-fg: oklch(0.4 0.005 80);
   --tag-brown: oklch(0.93 0.015 60); --tag-brown-fg: oklch(0.42 0.04 55);
@@ -133,11 +133,25 @@
 }
 
 :root {
-  --mesh: radial-gradient(at 10% 20%, oklch(0.9 0.06 235) 0, transparent 50%), radial-gradient(at 50% 0%, oklch(0.92 0.05 305) 0, transparent 55%), radial-gradient(at 88% 30%, oklch(0.93 0.07 65) 0, transparent 50%), radial-gradient(at 70% 95%, oklch(0.92 0.05 350) 0, transparent 55%), linear-gradient(120deg, oklch(0.94 0.03 155), oklch(0.95 0.045 90));
   --shadow-card: 0 1px 2px oklch(0.31 0.01 80 / 0.05), 0 12px 32px -12px oklch(0.3 0.01 80 / 0.14);
   --shadow-float: 0 30px 60px -20px oklch(0.3 0.01 80 / 0.22), 0 18px 36px -18px oklch(0 0 0 / 0.12);
 }
-@utility bg-mesh { background: var(--mesh); }
 @utility shadow-card { box-shadow: var(--shadow-card); }
 @utility shadow-float { box-shadow: var(--shadow-float); }
 @layer base { body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; } }
+
+.dark {
+ --background: oklch(0.19 0.003 90); --foreground: oklch(0.93 0.002 90);
+ --card: oklch(0.22 0.003 90); --card-foreground: var(--foreground); --popover: var(--card); --popover-foreground: var(--foreground);
+ --primary: oklch(0.7 0.12 164); --primary-foreground: oklch(0.18 0.02 164); --ring: var(--primary);
+ --muted: oklch(0.25 0.003 90); --muted-foreground: oklch(0.7 0.004 90); --accent: oklch(0.28 0.003 90); --accent-foreground: var(--foreground);
+ --secondary: var(--muted); --secondary-foreground: var(--foreground); --border: oklch(0.33 0.003 90); --input: var(--border);
+ --sidebar: oklch(0.21 0.003 90); --sidebar-foreground: var(--foreground); --sidebar-border: var(--border);
+ --tag-gray: oklch(0.3 0.003 90); --tag-gray-fg: oklch(0.8 0.003 90);
+ --tag-blue: oklch(0.3 0.035 235); --tag-blue-fg: oklch(0.8 0.06 235);
+ --tag-yellow: oklch(0.32 0.03 90); --tag-yellow-fg: oklch(0.85 0.07 90);
+ --tag-purple: oklch(0.3 0.035 305); --tag-purple-fg: oklch(0.8 0.06 305);
+ --tag-green: oklch(0.3 0.035 155); --tag-green-fg: oklch(0.8 0.06 155);
+ --tag-red: oklch(0.3 0.035 25); --tag-red-fg: oklch(0.8 0.06 25);
+}
+@layer base { * { letter-spacing: 0; } input[type=checkbox] { accent-color: var(--primary); } }

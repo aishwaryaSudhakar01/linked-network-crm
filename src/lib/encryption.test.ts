@@ -1,0 +1,5 @@
+import {webcrypto} from 'node:crypto';
+import {beforeAll,describe,it,expect} from 'vitest';
+import {deriveKey,encrypt,decrypt,randomSalt,verifyPassphrase,ITERATIONS} from './encryption';
+beforeAll(()=>Object.defineProperty(globalThis,'crypto',{value:webcrypto,configurable:true}));
+describe('private notes',()=>{it('uses 310000 iterations and a nonexportable key',async()=>{expect(ITERATIONS).toBe(310000);expect((await deriveKey('long passphrase',randomSalt())).extractable).toBe(false);});it('round trips with unique nonces',async()=>{const key=await deriveKey('long passphrase',randomSalt());const a=await encrypt('Private notes',key);const b=await encrypt('Private notes',key);expect(a).not.toBe(b);expect(await decrypt(a,key)).toBe('Private notes');});it('rejects an incorrect passphrase',async()=>{const salt=randomSalt();const key=await deriveKey('correct passphrase',salt);const verifier=await encrypt('LinkedNetwork verified',key);await expect(verifyPassphrase('wrong passphrase',salt,verifier)).rejects.toThrow('Incorrect passphrase');});});
