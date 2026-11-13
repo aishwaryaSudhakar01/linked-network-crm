@@ -1,5 +1,7 @@
 - [x] Add editable, saved chat links to contact profiles.
 - [x] Replace expanded rows with contact pop-ups and verify the flow.
 - [x] Enable Lovable Cloud for accounts and persistent data.
-- [ ] Phase 1: named accounts, onboarding/encryption, contacts/home/pipeline, CSV/dedupe, templates/messaging, settings, feedback/admin, and rule tests. Use connected Lovable Cloud; assign admin only after account confirmation.
+- [x] Phase 1: named accounts, onboarding/encryption, contacts/home/pipeline, CSV/dedupe, templates/messaging, settings, feedback/admin, and rule tests. Verified signed-in workflows and 24 tests against connected Cloud.
+- [ ] Assign the designated admin — waiting for confirmation that the account exists.
+- [ ] Verify confirmation and password-recovery email round trips — requires a real recipient; test accounts used reserved addresses.
 - [ ] Phase 2: Calendar sync and PostHog — blocked until explicit go-ahead and analytics token/host.
