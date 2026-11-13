@@ -1,30 +1,18 @@
-import { describe, it, expect } from "vitest";
-import { type Contact, dueDate, reachOutSoon, logCatchUp, sampleContacts, chatHref, loadContacts, saveContacts } from "./contacts";
-const sample = sampleContacts()[0];
-if (!sample) throw new Error("Sample contact missing");
-const base: Contact = { ...sample, lastContact: "2026-01-01", reconnectDays: 30, nextCheckIn: "" };
-describe("contact chat links", () => {
-  it("saves and reloads the exact LinkedIn conversation URL", () => {
-    const chatLink = "https://www.linkedin.com/messaging/thread/abc123/?detail=hello";
-    saveContacts([{ ...base, chatLink }]);
-    expect(loadContacts()[0]?.chatLink).toBe(chatLink);
-    localStorage.clear();
-  });
-  it("preserves a Gmail thread URL", () => {
-    expect(chatHref("https://mail.google.com/mail/u/0/#inbox/abc123")).toBe("https://mail.google.com/mail/u/0/#inbox/abc123");
-  });
-  it("accepts old contacts without a chat link", () => expect(chatHref(base.chatLink)).toBeUndefined());
-  it("rejects executable links", () => expect(chatHref("javascript:alert(1)")).toBeUndefined());
+import {describe,it,expect} from 'vitest';
+import {blankContact,dueDate,logConversation,findDuplicate,mergeBlanks,chatHref,weeklyOutreach} from './contacts';
+import {parseConnections,mergeImport} from './csv';
+import {fillTemplate,connectionLengthAllowed} from './templates';
+describe('Phase 1 contact rules',()=>{
+ it('scheduled dates override cadence',()=>{const c={...blankContact(),last_contact:'2026-01-01',next_step_date:'2026-01-03',reconnect_cadence:'Monthly'};expect(dueDate(c)).toBe('2026-01-03');});
+ it('none has no reminder',()=>expect(dueDate({...blankContact(),last_contact:'2026-01-01'})).toBe(''));
+ it.each([['2 weeks','2026-01-15'],['Monthly','2026-01-31'],['Quarterly','2026-04-01']])('cadence %s', (cadence,date)=>expect(dueDate({...blankContact(),last_contact:'2026-01-01',reconnect_cadence:cadence})).toBe(date));
+ it('logging clears only past dates, preserves future dates and derives latest interaction',()=>{const c={...blankContact(),next_step_date:'2026-01-05'};const i={date:'2026-01-10',channel:'Email',summary:'Hi',meeting_notes:''};expect(logConversation(c,i,'2026-01-10').next_step_date).toBe('');expect(logConversation({...c,next_step_date:'2026-02-01'},i,'2026-01-10').next_step_date).toBe('2026-02-01');const logged=logConversation(c,i,'2026-01-10');expect(logConversation(logged,{...i,date:'2026-01-01'},'2026-01-10').last_contact).toBe('2026-01-10');});
+ it('not contacted advances to reached out',()=>expect(logConversation(blankContact(),{date:'2026-01-01',channel:'Email',summary:'Hi',meeting_notes:''}).stage).toBe('Reached out'));
+ it('reached out advances to replied',()=>expect(logConversation({...blankContact(),stage:'Reached out'},{date:'2026-01-01',channel:'Email',summary:'Hi',meeting_notes:''}).stage).toBe('Replied'));
+ it('LinkedIn match takes precedence over email',()=>{const a={...blankContact(),linkedin_url:'https://www.linkedin.com/in/a/',name:'A'};const b={...blankContact(),email:'b@example.com',name:'B'};expect(findDuplicate([a,b],{...blankContact(),linkedin_url:'https://linkedin.com/in/a',email:b.email})?.id).toBe(a.id);});
+ it('merges only blank values',()=>{const a={...blankContact(),name:'Existing',company:'Acme'};const b={...blankContact(),name:'Incoming',company:'Other',title:'Analyst'};expect(mergeBlanks(a,b)).toMatchObject({id:a.id,name:'Existing',company:'Acme',title:'Analyst'});});
+ it('import maps LinkedIn headers and skips note lines',()=>{const rows=parseConnections('Notes:\nExported data\nFirst Name,Last Name,URL,Email Address,Company,Position,Connected On\nJane,Doe,https://linkedin.com/in/jane,jane@example.com,Acme,Analyst,01 Nov 2026');expect(rows[0]).toMatchObject({name:'Jane Doe',linkedin_url:'https://linkedin.com/in/jane',email:'jane@example.com',company:'Acme',title:'Analyst',met_at:'LinkedIn, 01 Nov 2026',stage:'Not contacted',reconnect_cadence:'None'});expect(mergeImport(rows,rows)).toHaveLength(1);});
+ it('only allows HTTP(S) chat links',()=>{expect(chatHref('javascript:alert(1)')).toBeUndefined();expect(chatHref('https://mail.google.com/mail/u/0/#inbox/abc')).toBe('https://mail.google.com/mail/u/0/#inbox/abc');});
+ it('weekly progress counts people rather than messages',()=>{let c=logConversation(blankContact(),{date:'2026-11-09',channel:'Email',summary:'Hi',meeting_notes:''});c=logConversation(c,{date:'2026-11-10',channel:'Email',summary:'Hi',meeting_notes:''});expect(weeklyOutreach([c],'2026-11-13')).toBe(1);});
 });
-describe("reconnect rules", () => {
-  it("uses each contact's own reconnect days", () => expect(dueDate(base)).toBe("2026-01-31"));
-  it("scheduled check-in overrides default timing", () => expect(dueDate({ ...base, nextCheckIn: "2026-01-10" })).toBe("2026-01-10"));
-  it("reach out soon includes overdue and within 7 days only", () => {
-    const list = [base, { ...base, id: "x", lastContact: "2026-01-20" }];
-    expect(reachOutSoon(list, "2026-01-25").map((c) => c.id)).toEqual([base.id]);
-  });
-  it("logging a catch-up updates last contact", () => {
-    const c = logCatchUp({ ...base, nextCheckIn: "2026-01-05" }, { date: "2026-02-01", source: "Email", note: "hi" });
-    expect(c.lastContact).toBe("2026-02-01"); expect(c.nextCheckIn).toBe(""); expect(c.interactions.length).toBe(base.interactions.length + 1);
-  });
-});
+describe('template rules',()=>{it('fills names and retains visible missing gaps',()=>{const result=fillTemplate('Hi {{first_name}}, {{company}} — {{my_full_name}}', {...blankContact(),name:'Jane Doe'},{first_name:'Aishwarya',last_name:'Sudhakar',school:'UCLA',calendly_link:''});expect(result.text).toBe('Hi Jane, [missing: company] — Aishwarya Sudhakar');expect(result.missing).toEqual(['company']);});it('limits LinkedIn requests to 300 characters',()=>{expect(connectionLengthAllowed('a'.repeat(300))).toBe(true);expect(connectionLengthAllowed('a'.repeat(301))).toBe(false);});});

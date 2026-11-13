@@ -1,5 +1,7 @@
 - [x] Add editable, saved chat links to contact profiles.
 - [x] Replace expanded rows with contact pop-ups and verify the flow.
 - [x] Enable Lovable Cloud for accounts and persistent data.
-- [ ] Rebuild as LinkedNetwork with email/password accounts, private encrypted contacts, updated fields, reminders, CSV import/dedupe, search, feedback/admin, and tests — Lovable Cloud connected; implementation pending. Keep current hosting; no extra user profiles; designated admin is aishwaryasudhakar12@gmail.com.
-- [ ] Add privacy-safe PostHog usage events — project token and region/host pending.
+- [x] Phase 1: named accounts, onboarding/encryption, contacts/home/pipeline, CSV/dedupe, templates/messaging, settings, feedback/admin, and rule tests. Verified signed-in workflows and 24 tests against connected Cloud.
+- [ ] Assign the designated admin — waiting for confirmation that the account exists.
+- [ ] Verify confirmation and password-recovery email round trips — requires a real recipient; test accounts used reserved addresses.
+- [ ] Phase 2: Calendar sync and PostHog — blocked until explicit go-ahead and analytics token/host.
