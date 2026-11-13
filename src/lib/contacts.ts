@@ -18,3 +18,8 @@ export function linkedinKey(s:string){const url=chatHref(s);if(!url)return '';co
 export function findDuplicate(list:Contact[],c:Contact){const k=linkedinKey(c.linkedin_url);return (k?list.find(x=>linkedinKey(x.linkedin_url)===k):undefined)??(c.email?list.find(x=>x.email.trim().toLowerCase()===c.email.trim().toLowerCase()):undefined);}
 export function mergeBlanks(existing:Contact,incoming:Contact):Contact{const result={...existing};for(const field of ['name','company','title','linkedin_url','email','phone','city','met_at','chat_link'] as const){if(!result[field])result[field]=incoming[field];}return result;}
 export function weeklyOutreach(list:Contact[],from=today()){const d=new Date(from+'T12:00:00Z');d.setUTCDate(d.getUTCDate()-((d.getUTCDay()+6)%7));const start=d.toISOString().slice(0,10);return list.filter(c=>c.interactions.some(i=>i.date>=start&&i.date<=from)).length;}
+export function addDays(date:string,n:number){const d=new Date(date+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10);}
+/** Push a follow-up out by `days` from today. */
+export function snooze(c:Contact,days=3,from=today()):Contact{return {...c,next_step_date:addDays(from,days)};}
+/** Consecutive weeks (Mon–Sun) where distinct contacts reached met the goal. The current week counts only once met. */
+export function outreachStreak(list:Contact[],goal:number,from=today()){let streak=0;let end=from;const thisWeek=weeklyOutreach(list,from);if(thisWeek>=goal)streak++;const d=new Date(from+'T12:00:00Z');d.setUTCDate(d.getUTCDate()-((d.getUTCDay()+6)%7)-1);end=d.toISOString().slice(0,10);for(let i=0;i<520;i++){if(weeklyOutreach(list,end)<goal)break;streak++;end=addDays(end,-7);}return streak;}
