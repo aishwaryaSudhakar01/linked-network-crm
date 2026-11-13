@@ -8,7 +8,7 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import { NetworkSession } from "@/components/network/session";
 import { supabase } from "@/integrations/supabase/client";
@@ -122,11 +122,16 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const [sessionGeneration, setSessionGeneration] = useState(0);
 
   const router = useRouter();
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (!["SIGNED_IN", "SIGNED_OUT", "USER_UPDATED"].includes(event)) return;
+      if (event === "SIGNED_OUT") {
+        setSessionGeneration(value => value + 1);
+        void queryClient.cancelQueries().then(() => queryClient.clear());
+      }
       void router.invalidate();
       if (event !== "SIGNED_OUT") void queryClient.invalidateQueries();
     });
@@ -136,7 +141,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <NetworkSession><Outlet /><Toaster /></NetworkSession>
+      <NetworkSession key={sessionGeneration}><Outlet /><Toaster /></NetworkSession>
     </QueryClientProvider>
   );
 }
