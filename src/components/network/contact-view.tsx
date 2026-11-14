@@ -3,11 +3,12 @@ import {useEffect,useRef,useState} from 'react';
 import {MessageSquare,CalendarPlus,Copy,Pencil,Trash2,NotebookPen,AlertCircle} from 'lucide-react';
 import {toast} from 'sonner';
 import {Button} from '@/components/ui/button';
-import {STAGES,daysUntil,dueDate,type Contact,type Stage,type Interaction} from '@/lib/contacts';
+import {STAGES,connectionTypes,daysUntil,dueDate,type Contact,type Stage,type Interaction} from '@/lib/contacts';
 import {formatDate} from '@/lib/dates';
 import {DateInput} from './date-input';
 import type {Profile} from '@/lib/network-store';
 import {ContactLink} from './contact-link';
+import {ConnectionTypes} from './connection-types';
 import {ConversationDialog} from './contact-dialogs';
 import {Avatar,ChannelIcon,Detail,Editable} from './ui-kit';
 export function ContactView({c,contacts,profile,onEdit,onLog,onMessage,onSave,onDelete}:{c:Contact;contacts:Contact[];profile:Profile;onEdit?:()=>void;onLog:()=>void;onMessage:()=>void;onSave:(c:Contact)=>Promise<void>;onDelete:()=>Promise<void>}){
@@ -24,6 +25,7 @@ export function ContactView({c,contacts,profile,onEdit,onLog,onMessage,onSave,on
     <div className="grid items-start gap-5 md:gap-7 sm:grid-cols-[minmax(0,200px)_minmax(0,1fr)]">
       <aside className="order-2 min-w-0 space-y-4 text-sm sm:order-1">
         <section><h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Details</h2><dl className="space-y-2"><Detail label="Email"><div className="flex min-w-0 items-center gap-1"><div className="min-w-0 flex-1"><Editable label="Email" type="email" value={c.email} placeholder="Add email" onSave={v=>set('email',v)}/></div><Button type="button" variant="ghost" size="icon" className="size-7 shrink-0 text-muted-foreground" aria-label="Copy email" title="Copy email" disabled={!c.email} onClick={()=>void copyEmail()}><Copy/></Button></div></Detail><ContactLink label="LinkedIn" value={c.linkedin_url} onSave={v=>set('linkedin_url',v)}/><ContactLink label="Chat" value={c.chat_link} onSave={v=>set('chat_link',v)}/><ContactLink label="Calendly" value={c.calendly_link??''} onSave={v=>set('calendly_link',v)}/></dl></section>
+        <section><h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Connection type</h2><ConnectionTypes value={connectionTypes(c)} onChange={v=>void set('connection_types',v)}/></section>
         <section><h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Notes</h2><Editable label="Personal notes" multiline value={c.personal_notes} placeholder="University, advice, projects, interests, family" onSave={v=>set('personal_notes',v)}/></section>
 
       </aside>

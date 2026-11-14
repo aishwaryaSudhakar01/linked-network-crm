@@ -1,8 +1,10 @@
 import {describe,it,expect} from 'vitest';
-import {blankContact,dueDate,logConversation,editConversation,reminderStatus,findDuplicate,mergeBlanks,chatHref,weeklyOutreach} from './contacts';
+import {blankContact,connectionTypes,hasConnectionType,dueDate,logConversation,editConversation,reminderStatus,findDuplicate,mergeBlanks,chatHref,weeklyOutreach} from './contacts';
 import {parseConnections,mergeImport} from './csv';
 import {fillTemplate,connectionLengthAllowed} from './templates';
 describe('Phase 1 contact rules',()=>{
+ it('filters a multi-select contact by either selected connection type',()=>{const c={...blankContact(),connection_types:['Alumni','Classmate']};expect(connectionTypes(c)).toEqual(['Alumni','Classmate']);expect(hasConnectionType(c,'Alumni')).toBe(true);expect(hasConnectionType(c,'Classmate')).toBe(true);expect(hasConnectionType(c,'Recruiter')).toBe(false);});
+ it('preserves legacy connection types and allows clearing all selections',()=>{const c={...blankContact(),connection_type:'Alumni'};expect(hasConnectionType(c,'Alumni')).toBe(true);expect(connectionTypes({...c,connection_types:[]})).toEqual([]);expect(hasConnectionType({...c,connection_types:[]},'Alumni')).toBe(false);});
  it('shows reminders starting exactly two days before the deadline',()=>{const c={...blankContact(),next_step_date:'2026-11-20'};expect(reminderStatus(c,'2026-11-17')).toBeUndefined();expect(reminderStatus(c,'2026-11-18')).toEqual({days:2,label:'due in 2 days'});});
  it('shows due in 1 day one day before the deadline',()=>expect(reminderStatus({...blankContact(),next_step_date:'2026-11-20'},'2026-11-19')).toEqual({days:1,label:'due in 1 day'}));
  it('shows due on the deadline',()=>expect(reminderStatus({...blankContact(),next_step_date:'2026-11-20'},'2026-11-20')).toEqual({days:0,label:'due'}));
