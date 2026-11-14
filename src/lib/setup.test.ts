@@ -3,7 +3,7 @@ import {advanceSetup,completeSetup,pendingSetup} from './setup';
 import {fillTemplate,missingVariables,safeMessage} from './templates';
 import {blankContact} from './contacts';
 import type {Profile} from './network-store';
-const profile={user_id:'test',first_name:'Signup',last_name:'Name',school:'',linkedin_url:'',calendly_link:'',weekly_goal:5,onboarding_step:2,encryption_salt:null,encryption_verifier:null,theme:'light',skipped_setup_steps:[],setup_dismissed:false} satisfies Profile;
+const profile:Profile={user_id:'test',first_name:'Signup',last_name:'Name',school:'',linkedin_url:'',calendly_link:'',weekly_goal:5,onboarding_step:2,encryption_salt:null,encryption_verifier:null,theme:'light',skipped_setup_steps:[],setup_dismissed:false};
 describe('skip-proof setup',()=>{
  it('skipping About you retains weekly goal 5',()=>expect(advanceSetup(profile,true).weekly_goal).toBe(5));
  it('records only skipped optional steps',()=>{let p=profile;while(p.onboarding_step<6)p=advanceSetup(p,true);expect(p.skipped_setup_steps).toEqual([2,4,5]);expect(p.onboarding_step).toBe(6);});
