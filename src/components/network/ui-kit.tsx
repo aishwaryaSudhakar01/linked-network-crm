@@ -3,12 +3,12 @@ import {Linkedin,Mail,Coffee,Phone,Video,CalendarDays,MessageCircle} from 'lucid
 import {Skeleton} from '@/components/ui/skeleton';
 import {Button} from '@/components/ui/button';
 import {cn} from '@/lib/utils';
-import {daysUntil,today} from '@/lib/contacts';
+import {formatDate} from '@/lib/dates';
 const TONES=['bg-tag-blue text-tag-blue-fg','bg-tag-purple text-tag-purple-fg','bg-tag-purple text-tag-purple-fg','bg-tag-orange text-tag-orange-fg','bg-tag-pink text-tag-pink-fg','bg-tag-yellow text-tag-yellow-fg','bg-tag-brown text-tag-brown-fg','bg-tag-red text-tag-red-fg'];
 export function avatarTone(name:string){let h=0;for(const ch of name)h=(h*31+ch.charCodeAt(0))>>>0;return TONES[h%TONES.length]??TONES[0]??'';}
 export function initials(name:string){return name.trim().split(/\s+/).slice(0,2).map(p=>p[0]?.toUpperCase()??'').join('')||'?';}
 export function Avatar({name,size='md'}:{name:string;size?:'sm'|'md'|'lg'}){return <span aria-hidden className={cn('inline-flex shrink-0 items-center justify-center rounded-full font-medium',avatarTone(name),size==='sm'&&'size-6 text-[10px]',size==='md'&&'size-8 text-xs',size==='lg'&&'size-14 text-lg')}>{initials(name)}</span>;}
-export function relTime(date:string){if(!date)return '—';const d=daysUntil(date,today());if(d===0)return 'Today';if(d===-1)return 'Yesterday';if(d===1)return 'Tomorrow';if(d<0){const a=-d;return a<7?`${a}d ago`:a<60?`${Math.round(a/7)}w ago`:a<365?`${Math.round(a/30)}mo ago`:`${Math.round(a/365)}y ago`;}return d<7?`in ${d}d`:`in ${Math.round(d/7)}w`;}
+export function relTime(date:string){return formatDate(date);}
 export function ChannelIcon({channel,className}:{channel:string;className?:string}){const I={LinkedIn:Linkedin,Email:Mail,Coffee:Coffee,Call:Phone,Meeting:Video,Event:CalendarDays}[channel]??MessageCircle;return <I aria-hidden className={cn('size-3.5',className)}/>;}
 export function ListSkeleton({rows=5}:{rows?:number}){return <div role="status" aria-label="Loading" className="space-y-3">{Array.from({length:rows},(_,i)=><Skeleton key={i} className="h-12 w-full"/>)}</div>;}
 export function EmptyState({icon,text,action}:{icon:ReactNode;text:string;action?:ReactNode}){return <div className="flex flex-col items-start gap-4 rounded-[10px] border border-dashed border-border px-6 py-10"><span className="text-muted-foreground">{icon}</span><p className="text-sm text-muted-foreground">{text}</p>{action}</div>;}

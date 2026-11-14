@@ -39,3 +39,4 @@ use the editor.
 - Contact inline edits merge into a ref of the latest edited copy, because back-to-back saves otherwise overwrite each other with stale data.
 - Track skipped optional setup steps and reminder dismissal in owner-scoped profiles, so setup resumes and completion persists across devices.
 - Persist appearance in profiles and a local pre-paint theme mirror; theme mutations cancel stale profile reads so toggling cannot be overwritten.
+- Keep calendar dates ISO in storage and use shared date formatting/input helpers for display and edits, so browser locale and timezones cannot change their meaning.
