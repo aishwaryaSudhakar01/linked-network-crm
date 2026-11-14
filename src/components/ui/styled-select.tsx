@@ -1,8 +1,8 @@
-import {Children,isValidElement,type ReactNode,type SelectHTMLAttributes} from 'react';
+import {Children,isValidElement,type ReactNode,type ComponentProps} from 'react';
 import {Select,SelectTrigger,SelectValue,SelectContent,SelectItem} from './select';
 
-type Props=Omit<SelectHTMLAttributes<HTMLSelectElement>,'onChange'|'value'|'defaultValue'> & {
-  value?:string;onValueChange:(value:string)=>void;placeholder?:string;
+type Props=Omit<ComponentProps<typeof SelectTrigger>,'onChange'|'value'|'defaultValue'> & {
+  value?:string;onValueChange:(value:string)=>void;placeholder?:string;name?:string;required?:boolean;
 };
 export function StyledSelect({children,value,onValueChange,placeholder,className,id,name,disabled,required,...props}:Props){
   const options=Children.toArray(children).flatMap(child=>{

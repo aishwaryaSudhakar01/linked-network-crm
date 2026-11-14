@@ -46,3 +46,4 @@ use the editor.
 - Both CSV sources use the shared parser and existing encrypted contact save/merge path; downloadable samples come from the parser module to keep examples compatible.
 
 - Use the shared accent Button variant for logging, snoozing and importing so action contrast follows the current theme.
+- Use StyledSelect for application and calendar dropdowns so keyboard-accessible menus share theme tokens instead of native system colors.
