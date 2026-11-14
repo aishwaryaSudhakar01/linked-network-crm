@@ -1,3 +1,4 @@
+- [ ] Apply Sunset navy restyle only, including split sign-in, semantic accents, stage tags, contrast and both-theme checks.
 - [x] Add editable, saved chat links to contact profiles.
 - [x] Rename Profile Settings and support LinkedIn/general CSV imports with previews, info icon, and downloadable samples; parser tests and isolated browser uploads passed.
 - [x] Add opt-in remembered unlock on this device, scoped to the account and cleared on lock/sign-out; privacy tests and real browser key persistence passed.
