@@ -40,3 +40,4 @@ use the editor.
 - Track skipped optional setup steps and reminder dismissal in owner-scoped profiles, so setup resumes and completion persists across devices.
 - Persist appearance in profiles and a local pre-paint theme mirror; theme mutations cancel stale profile reads so toggling cannot be overwritten.
 - Keep calendar dates ISO in storage and use shared date formatting/input helpers for display and edits, so browser locale and timezones cannot change their meaning.
+- Both CSV sources use the shared parser and existing encrypted contact save/merge path; downloadable samples come from the parser module to keep examples compatible.

@@ -2,7 +2,8 @@ import {formatDate} from '@/lib/dates';
 import {pendingSetup} from '@/lib/setup';
 import {useState} from 'react';
 import {Link} from '@tanstack/react-router';
-import {Check,MessageSquare,NotebookPen,AlarmClock,Plus,Upload,Users,Sparkles,X} from 'lucide-react';
+import {Check,MessageSquare,NotebookPen,AlarmClock,Plus,Users,Sparkles,X} from 'lucide-react';
+import {ImportTrigger} from './import-trigger';
 import {Button} from '@/components/ui/button';
 import {STAGES,addDays,daysUntil,dueDate,outreachStreak,today,weeklyOutreach,type Contact} from '@/lib/contacts';
 import type {Profile} from '@/lib/network-store';
@@ -23,7 +24,7 @@ export function HomeView({contacts,profile,onOpen,onQuick,onImport,onMessage,onL
   return <div className="space-y-8">
     {!!pending.length&&<section className="rounded-lg border border-border bg-card p-4"><div className="flex items-center justify-between"><h2 className="text-sm font-semibold">Finish setting up</h2><Button variant="ghost" size="icon" aria-label="Dismiss setup reminder" onClick={()=>void onProfile({...profile,setup_dismissed:true})}><X/></Button></div><div className="mt-2 flex flex-wrap gap-2">{pending.includes(2)&&<Button asChild variant="outline" size="sm"><Link to="/settings">About you</Link></Button>}{pending.includes(4)&&<Button asChild variant="outline" size="sm"><Link to="/templates">Templates</Link></Button>}{pending.includes(5)&&<Button variant="outline" size="sm" onClick={onQuick}>First contacts</Button>}</div></section>}
     <header><p className="text-sm text-muted-foreground">{formatDate(t)}</p><h1 className="mt-1 text-4xl leading-tight">{greeting}, {profile.first_name||'there'}</h1></header>
-    {!contacts.length?<EmptyState icon={<Users className="size-6"/>} text="Add the people you've met to start tracking follow-ups." action={<div className="flex flex-wrap gap-2"><Button onClick={onQuick}><Plus/>Add contact</Button><Button variant="outline" onClick={onImport}><Upload/>Import LinkedIn CSV</Button></div>}/>:<>
+    {!contacts.length?<EmptyState icon={<Users className="size-6"/>} text="Add the people you've met to start tracking follow-ups." action={<div className="flex flex-wrap gap-2"><Button onClick={onQuick}><Plus/>Add contact</Button><ImportTrigger onImport={onImport}/></div>}/>:<>
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
       <section aria-labelledby="today-h"><h2 id="today-h" className="mb-3 flex items-center gap-2 text-sm font-semibold">Today <span className="font-normal text-muted-foreground">{due.length}</span></h2>
         {!due.length?<div className="rounded-lg border border-border bg-card p-6 shadow-card"><div className="mb-2 flex items-center gap-2 text-sm font-semibold"><span className="inline-flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground animate-in zoom-in"><Check className="size-3.5"/></span>You're caught up</div>{stale.length?<><p className="mb-4 text-sm text-muted-foreground">You haven't spoken to these people in 60+ days:</p><ul className="space-y-2">{stale.map(c=><li key={c.id}><button onClick={()=>onOpen(c.id)} className="flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-left text-sm transition-colors duration-150 hover:bg-accent"><Avatar name={c.name} size="sm"/><span className="font-medium">{c.name}</span><span className="ml-auto text-xs text-muted-foreground">{c.last_contact?relTime(c.last_contact):'Never'}</span></button></li>)}</ul></>:<p className="text-sm text-muted-foreground">Nothing due. Enjoy the quiet.</p>}</div>:
