@@ -42,5 +42,7 @@ use the editor.
 - Persist appearance in profiles and a local pre-paint theme mirror; theme mutations cancel stale profile reads so toggling cannot be overwritten.
 - Keep calendar dates ISO in storage and use shared date formatting/input helpers with a Shadcn month/year calendar picker, so browser locale and timezones cannot change their meaning.
 - Store optional contact booking URLs in the existing contact JSON and validate them with the shared HTTP(S) helper; account booking links remain separate for outbound templates.
-- ContactLink renders compact validated outline buttons with separate inline editing; contact due dates use DateInput's inline variant beside Next step while sharing calendar validation. Conversation edits reuse the shared dialog and replace by interaction ID to preserve history and derive the last-contact date without duplicate entries.
+- ContactLink uses the shared small Button size with separate inline editing and HTTP(S) validation; contact due dates use DateInput's inline variant beside Next step while sharing calendar validation. Conversation edits reuse the shared dialog and replace by interaction ID to preserve history and derive the last-contact date without duplicate entries.
 - Both CSV sources use the shared parser and existing encrypted contact save/merge path; downloadable samples come from the parser module to keep examples compatible.
+
+- Use the shared accent Button variant for logging, snoozing and importing so action contrast follows the current theme.
