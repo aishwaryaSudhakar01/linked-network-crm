@@ -2,8 +2,8 @@
 - [x] Replace expanded rows with contact pop-ups and verify the flow.
 - [x] Enable Lovable Cloud for accounts and persistent data.
 - [x] Phase 1: named accounts, onboarding/encryption, contacts/home/pipeline, CSV/dedupe, templates/messaging, settings, feedback/admin, and rule tests. Verified signed-in workflows and 24 tests against connected Cloud.
-- [ ] Assign the designated admin — waiting for confirmation that the account exists.
-- [ ] Verify confirmation and password-recovery email round trips — requires a real recipient; test accounts used reserved addresses.
+- [x] Assign the designated admin to the confirmed account user ID; verified stored role.
+- [ ] Password-recovery inbox verification — reset request accepted for your real address; inbox arrival cannot be observed and delivery logs have no event.
 - [x] Interface redesign: sidebar, command palette, Home, contacts table, and contact inline editing.
-- [ ] Finish Phase 1: indigo/Inter, Calendar coming soon, skip-proof setup reminder, safe template gaps, persistent dark mode, and end-to-end tests.
+- [x] Phase 1 implementation done: indigo/Inter, Calendar coming soon, skip-proof setup reminder, safe template gaps, persistent dark mode. Verified actual signup with all optional steps skipped, onboarding resume, contact save, warning/edit/copy, conversation read-back, CSV import, theme toggles/reload, reminder dismissal, desktop/mobile layouts, and Cloud privacy rules.
 - [ ] Phase 2: Google Calendar sync and PostHog analytics — coming soon, not part of Phase 1.
