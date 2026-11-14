@@ -4,5 +4,6 @@
 - [x] Phase 1: named accounts, onboarding/encryption, contacts/home/pipeline, CSV/dedupe, templates/messaging, settings, feedback/admin, and rule tests. Verified signed-in workflows and 24 tests against connected Cloud.
 - [ ] Assign the designated admin — waiting for confirmation that the account exists.
 - [ ] Verify confirmation and password-recovery email round trips — requires a real recipient; test accounts used reserved addresses.
-- [ ] Phase 2: Calendar sync and PostHog — blocked until explicit go-ahead and analytics token/host.- [ ] Interface redesign (sidebar, command palette, Home dashboard, dense contacts table, contact page inline editing, Geist/Instrument Serif) — no logic changes.
-- [ ] Per-user Google Calendar — blocked: a workspace admin must create the Google Calendar per-user sign-in client (the personal calendar connection only exposes one account).
+- [x] Interface redesign: sidebar, command palette, Home, contacts table, and contact inline editing.
+- [ ] Finish Phase 1: indigo/Inter, Calendar coming soon, skip-proof setup reminder, safe template gaps, persistent dark mode, and end-to-end tests.
+- [ ] Phase 2: Google Calendar sync and PostHog analytics — coming soon, not part of Phase 1.
