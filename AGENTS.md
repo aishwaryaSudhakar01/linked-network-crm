@@ -40,5 +40,6 @@ use the editor.
 - Contact inline edits merge into a ref of the latest edited copy, because back-to-back saves otherwise overwrite each other with stale data.
 - Track skipped optional setup steps and reminder dismissal in owner-scoped profiles, so setup resumes and completion persists across devices.
 - Persist appearance in profiles and a local pre-paint theme mirror; theme mutations cancel stale profile reads so toggling cannot be overwritten.
-- Keep calendar dates ISO in storage and use shared date formatting/input helpers for display and edits, so browser locale and timezones cannot change their meaning.
+- Keep calendar dates ISO in storage and use shared date formatting/input helpers with a Shadcn month/year calendar picker, so browser locale and timezones cannot change their meaning.
+- Store optional contact booking URLs in the existing contact JSON and validate them with the shared HTTP(S) helper; account booking links remain separate for outbound templates.
 - Both CSV sources use the shared parser and existing encrypted contact save/merge path; downloadable samples come from the parser module to keep examples compatible.
