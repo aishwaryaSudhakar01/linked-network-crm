@@ -11,8 +11,8 @@ export function StyledSelect({children,value,onValueChange,placeholder,className
     return [{value:optionValue,label,disabled:child.props.disabled}];
   });
   const empty=options.find(o=>!o.value);
-  return <Select value={value||''} onValueChange={onValueChange} name={name} disabled={disabled} required={required}>
+  return <Select value={value||''} onValueChange={onValueChange} {...(name?{name}:{})} disabled={!!disabled} required={!!required}>
     <SelectTrigger {...props} id={id} className={className}><SelectValue placeholder={placeholder??empty?.label??'Choose…'}/></SelectTrigger>
-    <SelectContent>{options.filter(o=>o.value).map(o=><SelectItem key={o.value} value={o.value} disabled={o.disabled}>{o.label}</SelectItem>)}</SelectContent>
+    <SelectContent>{options.filter(o=>o.value).map(o=><SelectItem key={o.value} value={o.value} disabled={!!o.disabled}>{o.label}</SelectItem>)}</SelectContent>
   </Select>;
 }
