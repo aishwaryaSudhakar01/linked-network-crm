@@ -37,3 +37,5 @@ use the editor.
 - Network UI modules share account/encryption context at the root; clear the key and query cache on sign-out to avoid retaining private state.
 - Network screens are split per view (home.tsx, directory.tsx, pipeline.tsx, contact-view.tsx) with shared primitives in ui-kit.tsx; workspace.tsx owns the shell, shortcuts, command palette, and save/undo, so views stay presentational.
 - Contact inline edits merge into a ref of the latest edited copy, because back-to-back saves otherwise overwrite each other with stale data.
+- Track skipped optional setup steps and reminder dismissal in owner-scoped profiles, so setup resumes and completion persists across devices.
+- Persist appearance in profiles and a local pre-paint theme mirror; theme mutations cancel stale profile reads so toggling cannot be overwritten.
