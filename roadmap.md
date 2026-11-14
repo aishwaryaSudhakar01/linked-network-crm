@@ -1,3 +1,4 @@
+- [x] Apply Sunset navy restyle only, including split sign-in, semantic accents and stage tags; all eight workspace views, five onboarding steps and sign-in checked in both themes using unsaved visual examples, mobile checked, text pairs meet 4.5:1 with darker matching light-mode accent text. Actual account remains locked; no private data or preferences changed. Existing theme/date/contact/navigation tests passed; build OK.
 - [x] Add editable, saved chat links to contact profiles.
 - [x] Rename Profile Settings and support LinkedIn/general CSV imports with previews, info icon, and downloadable samples; parser tests and isolated browser uploads passed.
 - [x] Add opt-in remembered unlock on this device, scoped to the account and cleared on lock/sign-out; privacy tests and real browser key persistence passed.
