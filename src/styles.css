@@ -191,7 +191,7 @@
   progress::-webkit-progress-bar { background: var(--border); border-radius: var(--radius); }
   progress::-webkit-progress-value { background: var(--primary); border-radius: var(--radius); }
   progress::-moz-progress-bar { background: var(--primary); border-radius: var(--radius); }
-  a:not(nav a):not([class*="inline-flex"]):hover { color: var(--foreground); text-decoration: underline; text-decoration-color: var(--highlight); text-underline-offset: 4px; }
+  a:not(nav a):not(.sunset-sidebar a):not([class*="inline-flex"]):hover { color: var(--foreground); text-decoration: underline; text-decoration-color: var(--highlight); text-underline-offset: 4px; }
   :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
   button, a { transition-duration: 150ms; }
 }
