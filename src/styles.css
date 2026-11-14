@@ -162,7 +162,7 @@
   progress::-webkit-progress-bar { background: var(--border); border-radius: var(--radius); }
   progress::-webkit-progress-value { background: var(--primary); border-radius: var(--radius); }
   progress::-moz-progress-bar { background: var(--primary); border-radius: var(--radius); }
-  a:not([data-slot]):hover { text-decoration-color: currentColor; }
+  a:not(nav a):not([class*="inline-flex"]):hover { text-decoration: underline; text-underline-offset: 4px; }
   :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
   button, a { transition-duration: 150ms; }
 }
