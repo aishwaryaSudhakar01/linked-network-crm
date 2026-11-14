@@ -8,3 +8,4 @@
 - [x] Phase 1 implementation done: indigo/Inter, Calendar coming soon, skip-proof setup reminder, safe template gaps, persistent dark mode. Verified actual signup with all optional steps skipped, onboarding resume, contact save, warning/edit/copy, conversation read-back, CSV import, theme toggles/reload, reminder dismissal, desktop/mobile layouts, and Cloud privacy rules.
 - [ ] Phase 2: Google Calendar sync and PostHog analytics — coming soon, not part of Phase 1.
 - [x] Restore compact screenshot-option-1 contact layout and use MM/DD/YYYY throughout; retain manual Calendar scheduling. Date/contact tests passed and isolated desktop/mobile layout checked; private-contact save/read-back awaits passphrase unlock.
+- [ ] Apply Notion colors and Inter typography only; check light/dark styling across public, setup, contact, and admin pages without changing layout or behavior.
