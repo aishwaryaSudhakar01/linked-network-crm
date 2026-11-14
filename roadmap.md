@@ -1,6 +1,7 @@
 - [x] Add editable, saved chat links to contact profiles.
-- [ ] Rename Profile Settings and support LinkedIn/general CSV imports with previews and downloadable samples.
-- [ ] Explain passphrase prompts and choose any change to unlock persistence without weakening note privacy.
+- [x] Rename Profile Settings and support LinkedIn/general CSV imports with previews, info icon, and downloadable samples; parser tests and isolated browser uploads passed.
+- [x] Add opt-in remembered unlock on this device, scoped to the account and cleared on lock/sign-out; privacy tests and real browser key persistence passed.
+- [ ] Verify new CSV save/read-back and remembered unlock end-to-end on the user's private contacts — requires the user to unlock notes; no private key or passphrase was available to the verification browser.
 - [x] Replace expanded rows with contact pop-ups and verify the flow.
 - [x] Enable Lovable Cloud for accounts and persistent data.
 - [x] Phase 1: named accounts, onboarding/encryption, contacts/home/pipeline, CSV/dedupe, templates/messaging, settings, feedback/admin, and rule tests. Verified signed-in workflows and 24 tests against connected Cloud.

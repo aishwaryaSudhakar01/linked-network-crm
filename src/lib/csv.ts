@@ -12,7 +12,7 @@ export function parseContactsCsv(text:string,format:ImportFormat):Contact[]{
  const start=format==='linkedin'?lines.findIndex(l=>/First Name/i.test(l)&&/Last Name/i.test(l)):0;
  if(start<0)throw new Error('Could not find First Name and Last Name headers. Upload your LinkedIn Connections.csv export.');
  const parsed=Papa.parse<Record<string,string>>(lines.slice(start).join('\n'),{header:true,skipEmptyLines:'greedy',transformHeader:normalize});
- if(parsed.errors.length)throw new Error('The CSV has malformed rows or quoted fields. Check that every row matches the header columns.');
+ if(parsed.errors.some(e=>e.code!=='UndetectableDelimiter'))throw new Error('The CSV has malformed rows or quoted fields. Check that every row matches the header columns.');
  const headers=parsed.meta.fields??[];
  if(format==='linkedin'&&(!headers.includes('first name')||!headers.includes('last name')))throw new Error('LinkedIn imports require First Name and Last Name columns.');
  if(format==='general'&&!headers.includes('name')&&!(headers.includes('first name')&&headers.includes('last name')))throw new Error('Include a Name column, or First Name and Last Name columns. You can download the sample below.');
