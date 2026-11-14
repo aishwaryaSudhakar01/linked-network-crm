@@ -1,8 +1,13 @@
 import {describe,it,expect} from 'vitest';
-import {blankContact,dueDate,logConversation,findDuplicate,mergeBlanks,chatHref,weeklyOutreach} from './contacts';
+import {blankContact,dueDate,logConversation,editConversation,reminderStatus,findDuplicate,mergeBlanks,chatHref,weeklyOutreach} from './contacts';
 import {parseConnections,mergeImport} from './csv';
 import {fillTemplate,connectionLengthAllowed} from './templates';
 describe('Phase 1 contact rules',()=>{
+ it('shows reminders starting exactly two days before the deadline',()=>{const c={...blankContact(),next_step_date:'2026-11-20'};expect(reminderStatus(c,'2026-11-17')).toBeUndefined();expect(reminderStatus(c,'2026-11-18')).toEqual({days:2,label:'due in 2 days'});});
+ it('shows due in 1 day one day before the deadline',()=>expect(reminderStatus({...blankContact(),next_step_date:'2026-11-20'},'2026-11-19')).toEqual({days:1,label:'due in 1 day'}));
+ it('shows due on the deadline',()=>expect(reminderStatus({...blankContact(),next_step_date:'2026-11-20'},'2026-11-20')).toEqual({days:0,label:'due'}));
+ it('keeps overdue reminders after the deadline',()=>{const c={...blankContact(),next_step_date:'2026-11-20'};expect(reminderStatus(c,'2026-11-21')).toEqual({days:-1,label:'overdue by 1 day'});expect(reminderStatus(c,'2026-11-25')).toEqual({days:-5,label:'overdue by 5 days'});expect(reminderStatus(blankContact(),'2026-11-20')).toBeUndefined();});
+ it('edits a conversation without duplicating it and derives last contact from history',()=>{const c={...blankContact(),next_step_date:'2026-11-20',stage:'Met' as const,interactions:[{id:'one',date:'2026-11-14',channel:'Coffee',summary:'Original',meeting_notes:''},{id:'two',date:'2026-11-12',channel:'Email',summary:'Earlier',meeting_notes:''}]};const edited=editConversation(c,{...c.interactions[0],id:'one',date:'2026-11-10',channel:'Coffee',summary:'Updated',meeting_notes:'Notes'});expect(edited.interactions).toHaveLength(2);expect(edited.interactions.find(i=>i.id==='one')?.summary).toBe('Updated');expect(edited.last_contact).toBe('2026-11-12');expect(edited.next_step_date).toBe('2026-11-20');expect(edited.stage).toBe('Met');});
  it('scheduled dates override cadence',()=>{const c={...blankContact(),last_contact:'2026-01-01',next_step_date:'2026-01-03',reconnect_cadence:'Monthly'};expect(dueDate(c)).toBe('2026-01-03');});
  it('none has no reminder',()=>expect(dueDate({...blankContact(),last_contact:'2026-01-01'})).toBe(''));
  it.each([['2 weeks','2026-01-15'],['Monthly','2026-01-31'],['Quarterly','2026-04-01']])('cadence %s', (cadence,date)=>expect(dueDate({...blankContact(),last_contact:'2026-01-01',reconnect_cadence:cadence})).toBe(date));
