@@ -47,3 +47,4 @@ use the editor.
 
 - Use the shared accent Button variant for logging, snoozing and importing so action contrast follows the current theme.
 - Use StyledSelect for application and calendar dropdowns so keyboard-accessible menus share theme tokens instead of native system colors.
+- Store multi-select connection types in optional contact JSON arrays with legacy single-type fallback, and reuse the checkbox menu and matching helper for editing/filtering so existing contacts remain compatible without a schema change.
