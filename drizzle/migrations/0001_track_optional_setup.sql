@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS skipped_setup_steps integer[] NOT NULL DEFAULT '{}', ADD COLUMN IF NOT EXISTS setup_dismissed boolean NOT NULL DEFAULT false;

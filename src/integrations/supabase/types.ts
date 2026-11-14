@@ -81,6 +81,8 @@ export type Database = {
           linkedin_url: string
           onboarding_step: number
           school: string
+          setup_dismissed: boolean
+          skipped_setup_steps: number[]
           theme: string
           user_id: string
           weekly_goal: number
@@ -94,6 +96,8 @@ export type Database = {
           linkedin_url?: string
           onboarding_step?: number
           school?: string
+          setup_dismissed?: boolean
+          skipped_setup_steps?: number[]
           theme?: string
           user_id: string
           weekly_goal?: number
@@ -107,6 +111,8 @@ export type Database = {
           linkedin_url?: string
           onboarding_step?: number
           school?: string
+          setup_dismissed?: boolean
+          skipped_setup_steps?: number[]
           theme?: string
           user_id?: string
           weekly_goal?: number
