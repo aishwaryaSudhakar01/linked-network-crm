@@ -1,0 +1,11 @@
+import {useState} from 'react';
+import {ExternalLink,Pencil,Check,X} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {chatHref} from '@/lib/contacts';
+import {inputClass} from './shared';
+
+export function ContactLink({label,value,onSave}:{label:string;value:string;onSave:(value:string)=>Promise<void>}){
+  const [editing,setEditing]=useState(false);const [draft,setDraft]=useState(value);const [busy,setBusy]=useState(false);const [error,setError]=useState('');const href=chatHref(value);
+  if(editing)return <form className="space-y-1" onSubmit={async e=>{e.preventDefault();const next=draft.trim();if(next&&!chatHref(next)){setError('Enter an HTTP or HTTPS link.');return;}setBusy(true);try{await onSave(next);setEditing(false);}catch{setError('Could not save link.');}finally{setBusy(false);}}}><input aria-label={label} autoFocus type="url" placeholder={`Add ${label.toLowerCase()}…`} className={inputClass} value={draft} onChange={e=>{setDraft(e.target.value);setError('');}}/><div className="flex gap-1"><Button size="icon" variant="ghost" aria-label={`Save ${label}`} disabled={busy}><Check/></Button><Button type="button" size="icon" variant="ghost" aria-label={`Cancel ${label} edit`} onClick={()=>setEditing(false)}><X/></Button></div>{error&&<p role="alert" className="text-xs text-destructive">{error}</p>}</form>;
+  return <div className="flex min-w-0 items-center gap-1">{href?<Button asChild variant="link" size="sm" className="min-w-0 justify-start px-0"><a href={href} title={value} target="_blank" rel="noopener noreferrer"><ExternalLink/>{label}</a></Button>:<Button type="button" variant="link" size="sm" disabled className="min-w-0 justify-start px-0 text-muted-foreground"><ExternalLink/>{label}</Button>}<Button type="button" variant="ghost" size="icon" className="ml-auto size-7 shrink-0 text-muted-foreground" aria-label={`Edit ${label}`} title={`Edit ${label}`} onClick={()=>{setDraft(value);setError('');setEditing(true);}}><Pencil/></Button></div>;
+}
