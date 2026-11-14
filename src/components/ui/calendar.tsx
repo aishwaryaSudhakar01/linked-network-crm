@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker";
+import { DayButton, DayPicker, getDefaultClassNames, type DropdownProps } from "react-day-picker";
+import {StyledSelect} from './styled-select';
 
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -40,7 +41,7 @@ function Calendar({
         months: cn("relative flex flex-col gap-4 md:flex-row", defaultClassNames.months),
         month: cn("flex w-full flex-col gap-4", defaultClassNames.month),
         nav: cn(
-          "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
+          "pointer-events-none absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1 [&>button]:pointer-events-auto",
           defaultClassNames.nav,
         ),
         button_previous: cn(
@@ -120,6 +121,7 @@ function Calendar({
           return <ChevronDownIcon className={cn("size-4", className)} {...props} />;
         },
         DayButton: CalendarDayButton,
+        Dropdown: CalendarDropdown,
         WeekNumber: ({ children, ...props }) => {
           return (
             <td {...props}>
@@ -134,6 +136,13 @@ function Calendar({
       {...props}
     />
   );
+}
+
+function CalendarDropdown({options,value,onChange,disabled,'aria-label':label}:DropdownProps){
+  return <StyledSelect aria-label={label} value={String(value??'')} disabled={disabled} className="h-8 w-auto px-2 py-1 text-xs" onValueChange={next=>{
+    const target={value:next};
+    onChange?.({target,currentTarget:target} as React.ChangeEvent<HTMLSelectElement>);
+  }}>{options?.map(o=><option key={o.value} value={String(o.value)} disabled={o.disabled}>{o.label}</option>)}</StyledSelect>;
 }
 
 function CalendarDayButton({
