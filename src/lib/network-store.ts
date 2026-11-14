@@ -4,7 +4,7 @@ import {encrypt,decrypt} from './encryption';
 import {linkedinKey,type Contact} from './contacts';
 import type {Template} from './templates';
 export type Profile=Database['public']['Tables']['profiles']['Row'];
-export async function readProfile(userId:string){const {data,error}=await supabase.from('profiles').select('*').eq('user_id',userId).single();if(error)throw error;return data;}
+export async function readProfile(userId:string){const {data,error}=await supabase.from('profiles').select('*').eq('user_id',userId).single();if(error)throw error;const {data:auth}=await supabase.auth.getUser();return {...data,first_name:data.first_name||auth.user?.user_metadata['first_name']||'',last_name:data.last_name||auth.user?.user_metadata['last_name']||''} as Profile;}
 export async function updateProfile(p:Profile){const {error}=await supabase.from('profiles').update(p).eq('user_id',p.user_id);if(error)throw error;}
 export async function sealContact(c:Contact,key:CryptoKey){return {...c,personal_notes:await encrypt(c.personal_notes,key),next_step:await encrypt(c.next_step,key),interactions:await Promise.all(c.interactions.map(async i=>({...i,summary:await encrypt(i.summary,key),meeting_notes:await encrypt(i.meeting_notes,key)})))};}
 export async function openContact(c:Contact,key:CryptoKey):Promise<Contact>{return {...c,personal_notes:await decrypt(c.personal_notes,key),next_step:await decrypt(c.next_step,key),interactions:await Promise.all(c.interactions.map(async i=>({...i,summary:await decrypt(i.summary,key),meeting_notes:await decrypt(i.meeting_notes,key)})))};}
