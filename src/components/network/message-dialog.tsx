@@ -1,4 +1,4 @@
-import {useRef,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {Copy,ExternalLink,Pencil} from 'lucide-react';
 import {toast} from 'sonner';
 import {Button} from '@/components/ui/button';
@@ -26,6 +26,7 @@ export function MessageDialog({contact,profile,templates,onClose,onSave,onTempla
  const [logDraft,setLogDraft]=useState<ReturnType<typeof sentDraft>|null>(null);const [confirmSent,setConfirmSent]=useState(false);const [sentVia,setSentVia]=useState<MessageAction>('copy');const [error,setError]=useState('');const [acting,setActing]=useState(false);
  const editor=useRef<HTMLDivElement>(null);const destinations=messageActions(contact);const isRequest=chosen?.type==='LinkedIn connection request';const changed=body!==templateBody||subject!==templateSubject;
  const disabled=acting||!body.trim()||(isRequest&&body.length>300);
+ useEffect(()=>{if(!editing)return;const outside=(e:PointerEvent)=>{if(!editor.current?.contains(e.target as Node))setEditing(false);};const escape=(e:KeyboardEvent)=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();setEditing(false);}};document.addEventListener('pointerdown',outside,true);document.addEventListener('keydown',escape,true);return()=>{document.removeEventListener('pointerdown',outside,true);document.removeEventListener('keydown',escape,true);};},[editing]);
  const act=async(action:MessageAction)=>{
   if(disabled)return;
   const gaps=missingVariables(body+(destinations.email?' '+subject:''));
