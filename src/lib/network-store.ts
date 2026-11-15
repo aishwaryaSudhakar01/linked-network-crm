@@ -11,7 +11,7 @@ export async function convertNotes(userId:string,key?:CryptoKey|null){
  // Compare the original JSON on each write: another tab's changes must never be overwritten.
  for(let offset=0;;offset+=500){
   const {data,error}=await supabase.from('contacts').select('id,data').eq('user_id',userId).order('id').range(offset,offset+499);if(error)throw error;
-  for(const row of data){const stored={...row.data as unknown as StoredContact,id:row.id};if(stored.notes_storage==='plain-v1')continue;
+  for(const row of data){if(row.data===null)throw new Error('Invalid saved contact. Original data has been kept.');const stored={...row.data as unknown as StoredContact,id:row.id};if(stored.notes_storage==='plain-v1')continue;
    const decoded=await decodeContact(stored,key);
    const result=await supabase.from('contacts').update({data:decoded as unknown as Json}).eq('id',row.id).eq('user_id',userId).eq('data',row.data).select('id');
    if(result.error)throw result.error;if(result.data.length!==1)throw new Error('A contact changed in another tab. Try conversion again.');
