@@ -1,0 +1,17 @@
+import {cleanup,fireEvent,render,screen,waitFor} from '@testing-library/react';
+import {afterEach,describe,it,expect,vi} from 'vitest';
+import {ConversationDialog} from './contact-dialogs';
+import {blankContact,type Contact,type Interaction} from '@/lib/contacts';
+import {sentDraft} from '@/lib/message-actions';
+vi.mock('@/components/ui/styled-select',()=>({StyledSelect:({children,onValueChange,...props}:any)=><select {...props} onChange={e=>onValueChange(e.target.value)}>{children}</select>}));
+afterEach(cleanup);
+const contact={...blankContact(),name:'Jane',stage:'Reached out' as const};
+function show(props:Partial<React.ComponentProps<typeof ConversationDialog>>={}){const save=vi.fn(async(_c:Contact)=>{});render(<ConversationDialog contact={contact} onClose={vi.fn()} onSave={save} {...props}/>);return save;}
+async function submit(save:ReturnType<typeof show>){fireEvent.change(screen.getByRole('textbox',{name:'Summary'}),{target:{value:'Updated summary'}});fireEvent.submit(screen.getByRole('textbox',{name:'Summary'}).closest('form') as HTMLFormElement);await waitFor(()=>expect(save).toHaveBeenCalledTimes(1));return save.mock.calls[0]?.[0];}
+describe('log form entry points',()=>{
+ it('shows only Where, Date, Summary, Meeting notes in order',()=>{show();expect(screen.queryByText('Activity')).toBeNull();expect(screen.queryByText('Outreach type')).toBeNull();const labels=[...document.querySelectorAll('form label')].map(e=>e.textContent);expect(labels).toEqual(['Where','Date','Summary','Meeting notes']);});
+ it('ordinary logging creates a conversation and moves Reached out to Talking',async()=>{const save=show();const result=await submit(save);expect(result?.interactions[0]?.kind).toBe('conversation');expect(result?.interactions[0]?.outreach_type).toBeUndefined();expect(result?.stage).toBe('Talking');});
+ it.each(['LinkedIn connection request','LinkedIn message','Email'])('sent draft from %s keeps its template-derived outreach type',async template=>{const draft=sentDraft(contact,'Sent body',template,'copy','2026-11-14');const save=show({draft});expect(screen.getByRole('heading')).toHaveTextContent('Log follow-up');const result=await submit(save);expect(result?.interactions[0]?.kind).toBe('outreach');expect(result?.interactions[0]?.outreach_type).toBe(template==='LinkedIn connection request'?'connection-request':'message');expect(result?.stage).toBe('Reached out');});
+ it('sent drafts for a new contact use Log sent message',()=>{show({contact:{...contact,stage:'Not contacted'},draft:sentDraft(contact,'Sent','Email','gmail','2026-11-14')});expect(screen.getByRole('heading')).toHaveTextContent('Log sent message');});
+ for(const metadata of [{kind:'outreach' as const,outreach_type:'connection-request' as const,follow_up:false},{kind:'outreach' as const,outreach_type:'message' as const,follow_up:true},{kind:'conversation' as const},{}])it(`editing preserves metadata ${JSON.stringify(metadata)}`,async()=>{const original:Interaction={id:'existing',date:'2026-11-14',channel:'Email',summary:'Original',meeting_notes:'Notes',...metadata};const save=show({contact:{...contact,interactions:[original]},interaction:original});const result=await submit(save);expect(result?.interactions).toHaveLength(1);expect(result?.interactions[0]).toEqual({...original,summary:'Updated summary'});expect(result?.stage).toBe('Reached out');});
+});
