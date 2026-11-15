@@ -23,6 +23,9 @@ export function outreachLines(list:Contact[],p:Partial<ReminderTiming>={},from=t
 function elapsed(date:string,from:string){return Math.max(0,-daysUntil(date.slice(0,10),from));}
 function activity(c:Contact){return c.interactions.map(i=>i.date).sort().at(-1)||c.last_contact||c.tracking_started||c.created_at.slice(0,10);}
 function afterStart(c:Contact,date:string){return c.tracking_started&&c.tracking_started>date?c.tracking_started:date;}
+export function upcomingSteps(list:Contact[],from=today(),days=3){
+ return list.filter(c=>{if(!c.next_step_date||c.stage==='Dormant'||c.tracked===false||(c.snoozed_until&&c.snoozed_until>from))return false;const n=daysUntil(c.next_step_date,from);return n>=1&&n<=days;}).sort((a,b)=>a.next_step_date.localeCompare(b.next_step_date));
+}
 export function reminders(c:Contact,p:Partial<ReminderTiming>={},from=today()):Reminder[]{
  c=effectiveContact(c,p,from);
  if(c.stage==='Dormant'||c.tracked===false||(c.snoozed_until&&from<c.snoozed_until))return [];
