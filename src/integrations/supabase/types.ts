@@ -83,6 +83,7 @@ export type Database = {
           last_name: string
           linkedin_url: string
           onboarding_step: number
+          reminder_dormant_days: number
           reminder_initial_days: number
           reminder_keep_days: number
           reminder_reply_days: number
@@ -102,6 +103,7 @@ export type Database = {
           last_name?: string
           linkedin_url?: string
           onboarding_step?: number
+          reminder_dormant_days?: number
           reminder_initial_days?: number
           reminder_keep_days?: number
           reminder_reply_days?: number
@@ -121,6 +123,7 @@ export type Database = {
           last_name?: string
           linkedin_url?: string
           onboarding_step?: number
+          reminder_dormant_days?: number
           reminder_initial_days?: number
           reminder_keep_days?: number
           reminder_reply_days?: number

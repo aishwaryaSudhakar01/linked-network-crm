@@ -50,5 +50,7 @@ use the editor.
 - Store multi-select connection types in optional contact JSON arrays with legacy single-type fallback, and reuse the checkbox menu and matching helper for editing/filtering so existing contacts remain compatible without a schema change.
 
 - Stage migration and optional contact tracking/outreach/snooze metadata use shared contact helpers; reminders are pure calendar-day rules with per-account timing, so views cannot diverge or erase deadlines.
-- Message destination visibility and copy-before-open live in message-actions; sent confirmation records outreach, so opening a link never implies sending.
+- Message destination visibility, copy-before-open and sent-log drafts live in message-actions; confirmation opens the shared editable log form, so navigation never implies sending.
 - Starter templates are seeded through a protected per-account initialization marker, so edits/deletions survive repeated initialization without restricting custom templates.
+
+- Shared calendar-day no-reply helpers derive and persist Dormant transitions after unlock, with typed outreach and independent revival anchors; Home counts and Contacts filters reuse them to avoid divergent eligibility.
