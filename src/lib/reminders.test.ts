@@ -1,6 +1,6 @@
 import {describe,it,expect} from 'vitest';
 import {blankContact,STAGES,migrateContact,logOutreach,logConversation,startTracking,snooze,type Contact} from './contacts';
-import {reminders,timingFor,validTiming} from './reminders';
+import {reminders,timingFor,validTiming,upcomingSteps} from './reminders';
 import {parseContactsCsv,mergeImport} from './csv';
 const contact=(data:Partial<Contact>={}):Contact=>({...blankContact(),created_at:'2026-11-01T23:59:00Z',...data});
 describe('approved stages and tracking',()=>{
