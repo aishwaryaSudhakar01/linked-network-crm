@@ -60,3 +60,4 @@ use the editor.
 - Shared calendar-day no-reply helpers derive and persist Dormant transitions after account load, with typed outreach and independent revival anchors; Home counts and Contacts filters reuse them to avoid divergent eligibility.
 
 - Log forms derive immutable kind/outreach metadata from their entry point; edits merge only visible fields into the stored entry so legacy and follow-up classification stays intact.
+- Home recent activity uses the shared calendar-day conversation grouping helper, not contact metadata or an entry-count limit, to keep date filtering and grouping testable without changing history.
