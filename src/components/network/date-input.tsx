@@ -13,7 +13,7 @@ export function DateInput({value,onChange,max,min,className,disabled,variant='de
   const calendarDate=(iso:string)=>{const [year,month,day]=iso.split('-').map(Number);return year&&month&&day?new Date(year,month-1,day):undefined;};
   const selected=calendarDate(value);
   const earliest=calendarDate(min??'');const latest=calendarDate(max??'');
-  return <div className={cn('relative min-w-0',className)}><input {...props} disabled={disabled} className={cn('w-full min-w-0 rounded-md border pr-9 text-sm font-normal tabular-nums text-foreground outline-none focus:ring-2 focus:ring-ring',variant==='inline'?'cursor-pointer border-transparent bg-transparent py-1 pl-1.5 hover:bg-accent focus:border-input focus:bg-card':'border-input bg-card py-2 pl-3')} type="text" inputMode="numeric" placeholder={props.placeholder??'MM/DD/YYYY'} pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" maxLength={10} value={draft} onChange={e=>{
+  return <div className={cn('relative min-w-0',className)}><input {...props} disabled={disabled} className={cn('w-full min-w-0 rounded-md border pr-9 text-sm font-normal tabular-nums text-foreground outline-none focus:ring-2 focus:ring-ring/30',variant==='inline'?'cursor-pointer border-transparent bg-transparent py-1 pl-1.5 hover:bg-accent focus:border-input focus:bg-card':'border-input bg-card py-2 pl-3')} type="text" inputMode="numeric" placeholder={props.placeholder??'MM/DD/YYYY'} pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" maxLength={10} value={draft} onChange={e=>{
     const text=e.target.value;setDraft(text);
     const iso=parseDate(text);
     const valid=!text||!!iso&&(!max||iso<=max)&&(!min||iso>=min);
