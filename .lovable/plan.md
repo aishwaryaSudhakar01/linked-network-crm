@@ -1,5 +1,13 @@
 # LinkedNetwork current app
 
+## Plan for approval
+- The uploaded brief's Pipeline removal, stage counts and migration, tracking, reminder preferences, message actions and starter-template protection are already implemented. Preserve these rather than rebuilding them.
+- Keep the newer approved deadline behavior: show the day before, show “due” on the deadline, then “Overdue by {n} days.” afterward. Do not restore the uploaded brief's older thank-you wording.
+- The outstanding proposed change is the narrowly scoped account-data cleanup listed below. Approving this plan authorizes only that listed cleanup, not deletion of any active account or any of your templates.
+- Before deletion, recheck the listed owner IDs against active accounts and the proposed row counts. Stop and report any difference before proceeding. Delete in one transaction, restricted to the listed IDs and only where the account remains absent; abort if the expected counts differ.
+- Afterward, verify your account, contact, six templates, profile, role and initialization record are unchanged, and the approved leftover rows are gone. Run focused existing reminder, stage and message tests without creating new accounts for this cleanup.
+- Preserve Ink and Marigold, Inter, current layout, encryption and private notes. No AI, paid services, marketing copy or new Dormant behavior.
+
 ## Interface and privacy
 - Ink and Marigold, Inter, MM/DD/YYYY dates, compact two-column contact pop-ups, desktop sidebar and mobile tabs.
 - Lovable Cloud email/password accounts, owner-scoped data, encrypted notes/next steps/conversations, optional remembered unlock. Admins cannot read private contacts or recover notes.
@@ -19,7 +27,7 @@
 
 ## Verification
 - 98 tests passed, including all reminder day counts, stage mappings, tracking, clipboard/navigation ordering, owner privacy and starter initialization preserving edited/deleted templates.
-- Temporary-account browser flow verified encrypted contact save/reload, messaging/clipboard, outreach history, CSV bulk activation, preference persistence, old Pipeline redirect and desktop/mobile themes; temporary data removed.
+- Temporary-account browser flow previously verified encrypted contact save/reload, messaging/clipboard, outreach history, CSV bulk activation, preference persistence, old Pipeline redirect and desktop/mobile themes. The current audit found leftover rows from older deleted accounts; complete cleanup is not yet verified.
 - The requesting user's private notes remain locked in the verification browser; no passphrase was requested or private contact data accessed.
 ## Account audit and cleanup proposal
 - Current active account list: one account, aishwaryasudhakar12@gmail.com; one contact, six templates, one profile, one role, one initialization record, zero feedback submissions. Preserve all of these.
