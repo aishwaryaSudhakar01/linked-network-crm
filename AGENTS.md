@@ -36,7 +36,7 @@ use the editor.
 
 - Network UI modules share account/encryption context at the root; clear the key and query cache on sign-out to avoid retaining private state.
 - Remembered unlock is opt-in IndexedDB storage of a non-exportable CryptoKey bound to account ID and verifier; restore only after account lookup, and erase on lock/sign-out without storing passphrases.
-- Network screens are split per view (home.tsx, directory.tsx, pipeline.tsx, contact-view.tsx) with shared primitives in ui-kit.tsx; workspace.tsx owns the shell, shortcuts, command palette, and save/undo, so views stay presentational.
+- Network screens are split per view (home.tsx, directory.tsx, contact-view.tsx) with shared primitives in ui-kit.tsx; workspace.tsx owns the shell, shortcuts, command palette, and save/undo, so views stay presentational.
 - Contact inline edits merge into a ref of the latest edited copy, because back-to-back saves otherwise overwrite each other with stale data.
 - Track skipped optional setup steps and reminder dismissal in owner-scoped profiles, so setup resumes and completion persists across devices.
 - Persist appearance in profiles and a local pre-paint theme mirror; theme mutations cancel stale profile reads so toggling cannot be overwritten.
@@ -48,3 +48,7 @@ use the editor.
 - Use the shared accent Button variant for logging, snoozing and importing so action contrast follows the current theme.
 - Use StyledSelect for application and calendar dropdowns so keyboard-accessible menus share theme tokens instead of native system colors.
 - Store multi-select connection types in optional contact JSON arrays with legacy single-type fallback, and reuse the checkbox menu and matching helper for editing/filtering so existing contacts remain compatible without a schema change.
+
+- Stage migration and optional contact tracking/outreach/snooze metadata use shared contact helpers; reminders are pure calendar-day rules with per-account timing, so views cannot diverge or erase deadlines.
+- Message destination visibility and copy-before-open live in message-actions; sent confirmation records outreach, so opening a link never implies sending.
+- Starter templates are seeded through a protected per-account initialization marker, so edits/deletions survive repeated initialization without restricting custom templates.
