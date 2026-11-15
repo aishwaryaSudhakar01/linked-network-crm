@@ -18,6 +18,7 @@ export function HomeView({contacts,profile,onOpen,onQuick,onImport,onMessage,onL
   const t=useToday();const progress=weeklyOutreach(contacts);const goal=profile.weekly_goal;const streak=outreachStreak(contacts,goal);
   const cardReminders=(c:Contact)=>reminders(c,profile,t).filter(r=>!(c.stage==='Reached out'&&r.kind==='stage'));const lines=outreachLines(contacts,profile,t);const due=contacts.filter(c=>cardReminders(c).length>0).sort((a,b)=>dueDate(a).localeCompare(dueDate(b)));
   const attention=contacts.filter(c=>cardReminders(c).length||matchesOutreach(c,'follow-up',profile,t)||matchesOutreach(c,'going-dormant',profile,t)).length;const week=Array.from({length:7},(_,i)=>addDays(t,i+1));
+  const upcoming=upcomingSteps(contacts,t,3);
   const recent=contacts.flatMap(c=>c.interactions.map(i=>({c,i}))).sort((a,b)=>b.i.date.localeCompare(a.i.date)).slice(0,8);
   const stale:Contact[]=[];
   const greeting=new Date().getHours()<12?'Good morning':new Date().getHours()<18?'Good afternoon':'Good evening';
