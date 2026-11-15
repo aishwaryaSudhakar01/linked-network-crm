@@ -28,8 +28,10 @@
 - [x] Assign the designated admin to the confirmed account user ID; verified stored role.
 - [ ] Password-recovery inbox verification — reset request accepted for your real address; inbox arrival cannot be observed and delivery logs have no event.
 - [x] Interface redesign: sidebar, command palette, Home, contacts table, and contact inline editing.
-- [x] Phase 1 implementation done: indigo/Inter, Calendar coming soon, skip-proof setup reminder, safe template gaps, persistent dark mode. Verified actual signup with all optional steps skipped, onboarding resume, contact save, warning/edit/copy, conversation read-back, CSV import, theme toggles/reload, reminder dismissal, desktop/mobile layouts, and Cloud privacy rules.
-- [ ] Phase 2: Google Calendar sync and PostHog analytics — coming soon, not part of Phase 1.
+- [x] Phase 1 implementation done: indigo/Inter, skip-proof setup reminder, safe template gaps, persistent dark mode. Verified actual signup with all optional steps skipped, onboarding resume, contact save, warning/edit/copy, conversation read-back, CSV import, theme toggles/reload, reminder dismissal, desktop/mobile layouts, and Cloud privacy rules.
+- [x] Removed all Calendar placeholders and Meetings navigation/page; /meetings redirects to Home. Schedule code unchanged; prefilled draft and no-save behavior tested. Retired setup-step resume/persistence tested; signed-in desktop/mobile cleanup verified with no runtime errors. All 195 tests passed; build OK.
+- [x] Google Calendar integration dropped; retain only existing manual prefilled Schedule drafts.
+- [ ] Phase 2: PostHog analytics — coming soon, not part of Phase 1.
 - [x] Restore compact screenshot-option-1 contact layout and use MM/DD/YYYY throughout; retain manual Calendar scheduling. Date/contact tests passed and isolated desktop/mobile layout checked; private-contact save/read-back awaits passphrase unlock.
 - [x] Apply Notion colors and Inter typography only; checked light/dark sign-in, all workspace views, admin and all onboarding steps with unsaved visual examples. Existing theme/date/routing tests pass; no data, logic, or layout changes.
-- [ ] Answer: does the App User Connector / connector gateway cost credits per request or per connected user (~20 users, Home opened a few times daily)?
+- [x] Calendar connector-cost research closed: Google Calendar integration dropped; no connector will be added.
