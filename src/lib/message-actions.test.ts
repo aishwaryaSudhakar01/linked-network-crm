@@ -4,7 +4,7 @@ import {messageActions,copyThenOpen} from './message-actions';
 describe('message destinations',()=>{
  it('keeps Copy available when no destinations are saved',()=>expect(messageActions(blankContact())).toEqual({chat:undefined,linkedin:undefined,email:undefined,existing:false}));
  it('new contacts expose only saved Gmail and LinkedIn destinations',()=>expect(messageActions({...blankContact(),email:'a@example.com',linkedin_url:'https://linkedin.com/in/a'})).toMatchObject({existing:false,chat:undefined,email:'a@example.com',linkedin:'https://linkedin.com/in/a'}));
- it('a chat link without history does not show Continue chat',()=>expect(messageActions({...blankContact(),chat_link:'https://example.com/chat'})).toMatchObject({existing:false,chat:undefined}));
+ it('a chat link without history shows Continue chat',()=>expect(messageActions({...blankContact(),chat_link:'https://example.com/chat',interactions:[]})).toMatchObject({existing:true,chat:'https://example.com/chat'}));
  it('history without a chat link uses the single row',()=>expect(messageActions({...blankContact(),interactions:[{id:'1',date:'2026-11-01',channel:'Email',summary:'',meeting_notes:''}]})).toMatchObject({existing:false,chat:undefined}));
  it('a chat link with history shows Continue chat',()=>expect(messageActions({...blankContact(),chat_link:'https://example.com/chat',interactions:[{id:'1',date:'2026-11-01',channel:'Email',summary:'',meeting_notes:''}]})).toMatchObject({existing:true,chat:'https://example.com/chat'}));
  it('rejects executable schemes for both link destinations',()=>expect(messageActions({...blankContact(),chat_link:'javascript:alert(1)',linkedin_url:'data:text/html,test'})).toMatchObject({chat:undefined,linkedin:undefined}));
