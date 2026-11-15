@@ -8,7 +8,7 @@
 - Home with daily rule-based reminders, weekly outreach progress, stage summary, next-step dates and recent activity.
 - Contacts with search, company/connection filters, clickable stage counts, table/card views, star/N shortcut hint, Quick add detail hint, contact pop-ups and inline editing.
 - Stages: Not contacted, Reached out, Talking, Met, Keep in touch. Existing Dormant remains supported, not newly assignable. Pipeline navigation is removed; its old address redirects to Contacts.
-- Reminders: initial outreach after 5 days, no reply after 7, Talking inactivity after 7, Keep in touch after 90 or contact cadence; all four defaults editable in Profile Settings. Explicit deadlines show the day before, due day and overdue follow-up. Snooze pauses without changing deadlines.
+- Reminders: initial outreach after 5 days, no reply after 7, Talking inactivity after 7, Keep in touch after 90 or contact cadence; all four defaults editable in Profile Settings. Explicit deadlines show the day before, due day and “Overdue by {n} days.” with a live count. Snooze pauses without changing deadlines.
 - Existing/manual contacts are tracked; new CSV contacts require single or bulk Start tracking. Tracking activation restarts inactivity clocks.
 - Separate conversations and sent outreach, editable history, derived last-contact dates and counted future follow-ups.
 - Message window always shows Copy; saved chat/email/LinkedIn determine available destinations. Chat and LinkedIn copy first; Gmail stays prefilled. Existing-conversation layout and captions guide available choices; logging remains explicit confirmation.
@@ -21,3 +21,8 @@
 - 98 tests passed, including all reminder day counts, stage mappings, tracking, clipboard/navigation ordering, owner privacy and starter initialization preserving edited/deleted templates.
 - Temporary-account browser flow verified encrypted contact save/reload, messaging/clipboard, outreach history, CSV bulk activation, preference persistence, old Pipeline redirect and desktop/mobile themes; temporary data removed.
 - The requesting user's private notes remain locked in the verification browser; no passphrase was requested or private contact data accessed.
+## Account audit and cleanup proposal
+- Current live account list: one account, aishwaryasudhakar12@gmail.com; one contact, six templates, one profile, one role, one initialization record, zero feedback submissions. Keep this account and all its data.
+- Current test accounts: zero. No accounts or data were deleted in this audit.
+- Previous inspection returned seven template-owning accounts. Prior temporary verification scripts created privacy-* and tracking-* accounts at example.com and cleaned up their own accounts/data. The current account records cannot establish the names of the six previously counted identities or the exact moment each disappeared. Do not invent that list or claim all six were confirmed tests.
+- Proposed deletion list: none, because no test accounts currently remain. Any future identified cleanup must be listed by exact account and data counts for separate approval before deletion.
