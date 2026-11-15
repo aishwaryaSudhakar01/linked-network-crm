@@ -26,6 +26,12 @@ function afterStart(c:Contact,date:string){return c.tracking_started&&c.tracking
 export function upcomingSteps(list:Contact[],from=today(),days=3){
  return list.filter(c=>{if(!c.next_step_date||c.stage==='Dormant'||c.tracked===false||(c.snoozed_until&&c.snoozed_until>from))return false;const n=daysUntil(c.next_step_date,from);return n>=1&&n<=days;}).sort((a,b)=>a.next_step_date.localeCompare(b.next_step_date));
 }
+export function recentConversationDays(list:Contact[],from=today()){
+ const entries=list.flatMap(c=>c.interactions.filter(i=>i.kind!=='outreach').map(i=>({c,i,date:i.date.slice(0,10)}))).filter(r=>{const age=-daysUntil(r.date,from);return Number.isFinite(age)&&age>=0&&age<7;}).sort((a,b)=>b.date.localeCompare(a.date));
+ const groups:{date:string;items:typeof entries}[]=[];
+ for(const entry of entries){const last=groups.at(-1);if(last?.date===entry.date){if(!last.items.some(r=>r.c.id===entry.c.id))last.items.push(entry);}else groups.push({date:entry.date,items:[entry]});}
+ return groups;
+}
 export function reminders(c:Contact,p:Partial<ReminderTiming>={},from=today()):Reminder[]{
  c=effectiveContact(c,p,from);
  if(c.stage==='Dormant'||c.tracked===false||(c.snoozed_until&&from<c.snoozed_until))return [];

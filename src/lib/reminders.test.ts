@@ -1,8 +1,17 @@
 import {describe,it,expect} from 'vitest';
 import {blankContact,STAGES,migrateContact,logOutreach,logConversation,startTracking,snooze,type Contact} from './contacts';
-import {reminders,timingFor,validTiming,upcomingSteps} from './reminders';
+import {reminders,timingFor,validTiming,upcomingSteps,recentConversationDays} from './reminders';
 import {parseContactsCsv,mergeImport} from './csv';
 const contact=(data:Partial<Contact>={}):Contact=>({...blankContact(),created_at:'2026-11-01T23:59:00Z',...data});
+const conversation=(date:string,id=date):Contact['interactions'][number]=>({id,date,channel:'Coffee chat',summary:'',meeting_notes:'',kind:'conversation'});
+describe('recent conversation days',()=>{
+ it('includes November 9-15 only when today is November 15',()=>{const c=contact({interactions:['2026-11-03','2026-11-08','2026-11-09','2026-11-15','2026-11-16'].map(d=>conversation(d))});expect(recentConversationDays([c],'2026-11-15').map(g=>g.date)).toEqual(['2026-11-15','2026-11-09']);});
+ it('shows Shagun on both November 15 and 13 and groups Hamza on the same conversation day',()=>{const shagun=contact({id:'shagun',interactions:[conversation('2026-11-13'),conversation('2026-11-15')]});const hamza=contact({id:'hamza',last_contact:'2026-11-03',interactions:[conversation('2026-11-15')]});expect(recentConversationDays([shagun,hamza],'2026-11-15').map(g=>({date:g.date,ids:g.items.map(r=>r.c.id)}))).toEqual([{date:'2026-11-15',ids:['shagun','hamza']},{date:'2026-11-13',ids:['shagun']}]);});
+ it('uses conversation dates rather than contact creation or last-contact fields',()=>{expect(recentConversationDays([contact({created_at:'2026-11-15T21:00:00Z',last_contact:'2026-11-15',interactions:[conversation('2026-11-03')]})],'2026-11-15')).toEqual([]);});
+ it('excludes sent outreach but retains legacy conversations',()=>{const {kind,...legacy}=conversation('2026-11-14');const c=contact({interactions:[{...conversation('2026-11-15'),kind:'outreach'},legacy]});expect(recentConversationDays([c],'2026-11-15').map(g=>g.date)).toEqual(['2026-11-14']);});
+ it('does not truncate at eight entries and shows each person once per day',()=>{const list=Array.from({length:10},(_,n)=>contact({id:String(n),interactions:[conversation('2026-11-15',`${n}-a`),conversation('2026-11-15',`${n}-b`)]}));expect(recentConversationDays(list,'2026-11-15')[0]?.items).toHaveLength(10);});
+ it('groups timestamp dates by their stored calendar day',()=>{expect(recentConversationDays([contact({interactions:[conversation('2026-11-15T23:59:00Z'),conversation('2026-11-15','second')]})],'2026-11-15').map(g=>[g.date,g.items.length])).toEqual([['2026-11-15',1]]);});
+});
 describe('approved stages and tracking',()=>{
  it.each([['Replied','Talking'],['Ongoing','Keep in touch'],['Dormant','Dormant']])('migrates %s without changing payloads',(old,next)=>{const c=contact({stage:old as Contact['stage'],personal_notes:'encrypted-value'});expect(migrateContact(c)).toEqual({...c,stage:next});});
  it('offers exactly five new stages, not Dormant',()=>expect(STAGES).toEqual(['Not contacted','Reached out','Talking','Met','Keep in touch']));
