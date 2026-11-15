@@ -25,3 +25,9 @@ describe('daily reminder rules',()=>{
  it('snoozes without changing elapsed days or deadline',()=>{const c=snooze(contact({next_step_date:'2026-11-15'}),3,'2026-11-15');expect(c.next_step_date).toBe('2026-11-15');expect(reminders(c,{},'2026-11-17')).toEqual([]);expect(reminders(c,{},'2026-11-18').map(r=>r.days)).toEqual([-3,17]);});
  it('counts calendar days across month and leap-year boundaries',()=>expect(reminders(contact({created_at:'2024-02-28T23:59:00Z'}),{reminder_initial_days:1},'2024-03-01')[0]?.days).toBe(2));
 });
+describe('upcoming next steps',()=>{
+ it('lists due dates 1-3 days out, sorted soonest first',()=>{const list=[contact({id:'c',next_step_date:'2026-11-18'}),contact({id:'a',next_step_date:'2026-11-16'}),contact({id:'b',next_step_date:'2026-11-17'})];expect(upcomingSteps(list,'2026-11-15').map(c=>c.id)).toEqual(['a','b','c']);});
+ it('excludes today, overdue, and more than 3 days out',()=>{const list=[contact({id:'today',next_step_date:'2026-11-15'}),contact({id:'late',next_step_date:'2026-11-14'}),contact({id:'far',next_step_date:'2026-11-19'})];expect(upcomingSteps(list,'2026-11-15')).toEqual([]);});
+ it('excludes Dormant, untracked, snoozed, and contacts without a due date',()=>{const list=[contact({id:'dormant',stage:'Dormant',next_step_date:'2026-11-16'}),contact({id:'untracked',tracked:false,next_step_date:'2026-11-16'}),contact({id:'snoozed',next_step_date:'2026-11-16',snoozed_until:'2026-11-18'}),contact({id:'none'})];expect(upcomingSteps(list,'2026-11-15')).toEqual([]);});
+ it('includes a snoozed contact once the snooze has passed',()=>expect(upcomingSteps([contact({id:'x',next_step_date:'2026-11-17',snoozed_until:'2026-11-15'})],'2026-11-15').map(c=>c.id)).toEqual(['x']));
+});
