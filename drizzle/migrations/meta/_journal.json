@@ -15,6 +15,13 @@
       "when": 1794615271261,
       "tag": "0001_track_optional_setup",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794704085959,
+      "tag": "0002_contact_tracking_reminder_timing",
+      "breakpoints": true
     }
   ]
 }

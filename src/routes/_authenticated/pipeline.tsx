@@ -1,4 +1,3 @@
-import {createFileRoute} from '@tanstack/react-router';
-import {Workspace} from '@/components/network/workspace';
+import {createFileRoute,Navigate} from '@tanstack/react-router';
 import {metadata} from '@/components/network/shared';
-export const Route=createFileRoute('/_authenticated/pipeline')({head:()=>metadata('Pipeline','Manage contacts across your networking stages.'),component:()=> <Workspace view="pipeline"/>});
+export const Route=createFileRoute('/_authenticated/pipeline')({head:()=>metadata('Contacts redirect','Networking stages now live in Contacts.'),component:()=> <Navigate to="/contacts" replace/>});
