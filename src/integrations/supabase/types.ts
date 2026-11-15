@@ -21,6 +21,7 @@ export type Database = {
           email_key: string | null
           id: string
           linkedin_key: string | null
+          stage_rules_version: number
           user_id: string
         }
         Insert: {
@@ -29,6 +30,7 @@ export type Database = {
           email_key?: string | null
           id?: string
           linkedin_key?: string | null
+          stage_rules_version?: number
           user_id?: string
         }
         Update: {
@@ -37,6 +39,7 @@ export type Database = {
           email_key?: string | null
           id?: string
           linkedin_key?: string | null
+          stage_rules_version?: number
           user_id?: string
         }
         Relationships: []
@@ -80,6 +83,10 @@ export type Database = {
           last_name: string
           linkedin_url: string
           onboarding_step: number
+          reminder_initial_days: number
+          reminder_keep_days: number
+          reminder_reply_days: number
+          reminder_talking_days: number
           school: string
           setup_dismissed: boolean
           skipped_setup_steps: number[]
@@ -95,6 +102,10 @@ export type Database = {
           last_name?: string
           linkedin_url?: string
           onboarding_step?: number
+          reminder_initial_days?: number
+          reminder_keep_days?: number
+          reminder_reply_days?: number
+          reminder_talking_days?: number
           school?: string
           setup_dismissed?: boolean
           skipped_setup_steps?: number[]
@@ -110,12 +121,31 @@ export type Database = {
           last_name?: string
           linkedin_url?: string
           onboarding_step?: number
+          reminder_initial_days?: number
+          reminder_keep_days?: number
+          reminder_reply_days?: number
+          reminder_talking_days?: number
           school?: string
           setup_dismissed?: boolean
           skipped_setup_steps?: number[]
           theme?: string
           user_id?: string
           weekly_goal?: number
+        }
+        Relationships: []
+      }
+      template_initializations: {
+        Row: {
+          initialized_at: string
+          user_id: string
+        }
+        Insert: {
+          initialized_at?: string
+          user_id: string
+        }
+        Update: {
+          initialized_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -176,6 +206,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      seed_account_templates: { Args: { _user_id: string }; Returns: undefined }
       total_user_count: { Args: never; Returns: number }
     }
     Enums: {
