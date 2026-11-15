@@ -32,3 +32,4 @@
 - [ ] Phase 2: Google Calendar sync and PostHog analytics — coming soon, not part of Phase 1.
 - [x] Restore compact screenshot-option-1 contact layout and use MM/DD/YYYY throughout; retain manual Calendar scheduling. Date/contact tests passed and isolated desktop/mobile layout checked; private-contact save/read-back awaits passphrase unlock.
 - [x] Apply Notion colors and Inter typography only; checked light/dark sign-in, all workspace views, admin and all onboarding steps with unsaved visual examples. Existing theme/date/routing tests pass; no data, logic, or layout changes.
+- [ ] Answer: does the App User Connector / connector gateway cost credits per request or per connected user (~20 users, Home opened a few times daily)?
