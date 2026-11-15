@@ -36,6 +36,13 @@
       "when": 1794708039201,
       "tag": "0004_retire_passphrase_setup",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794709566495,
+      "tag": "0005_replace_new_account_starter_templates",
+      "breakpoints": true
     }
   ]
 }
