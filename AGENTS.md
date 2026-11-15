@@ -28,14 +28,14 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
-- Use browser Cloud queries with owner-scoped RLS and the network-store module for persistence; seal sensitive contact fields with the in-memory key before writes.
+- Use browser Cloud queries with owner-scoped RLS and the network-store module for persistence; save new contact JSON with an explicit plain-v1 storage marker; owner-device legacy conversion compares original JSON before writing and only clears verifier through the guarded completion RPC.
 - Keep account names/preferences in profiles and admin roles in user_roles; database authorization protects feedback review and aggregate counts.
 - Protected screens live under the client-only authenticated layout; the root redirects to account or Home without a landing page.
 - Contact details use the shared accessible dialog rather than inline expansion, so editing and catch-up flows retain a consistent dismissible pop-up.
 - Optional chat links support existing stored contacts; allow only HTTP(S) navigation to prevent executable URL schemes.
 
-- Network UI modules share account/encryption context at the root; clear the key and query cache on sign-out to avoid retaining private state.
-- Remembered unlock is opt-in IndexedDB storage of a non-exportable CryptoKey bound to account ID and verifier; restore only after account lookup, and erase on lock/sign-out without storing passphrases.
+- Network UI modules share account context at the root; transient conversion keys and the query cache clear on sign-out to avoid retaining private state. Keep generated persistent/auto-refresh auth storage; do not introduce idle sign-out.
+- Legacy conversion alone may restore an account-bound remembered key or request the old passphrase once; erase the key after success and never discard encrypted data when decryption fails.
 - Network screens are split per view (home.tsx, directory.tsx, contact-view.tsx) with shared primitives in ui-kit.tsx; workspace.tsx owns the shell, shortcuts, command palette, and save/undo, so views stay presentational.
 - Contact inline edits merge into a ref of the latest edited copy, because back-to-back saves otherwise overwrite each other with stale data.
 - Next-step completion uses the shared reviewed conversation form and one contact save; clear only the captured step so cancellation or concurrent inline edits cannot lose a deadline.
@@ -44,7 +44,7 @@ use the editor.
 - Keep calendar dates ISO in storage and use shared date formatting/input helpers with a Shadcn month/year calendar picker, so browser locale and timezones cannot change their meaning.
 - Store optional contact booking URLs in the existing contact JSON and validate them with the shared HTTP(S) helper; account booking links remain separate for outbound templates.
 - ContactLink uses the shared small Button size with separate inline editing and HTTP(S) validation; contact due dates use DateInput's inline variant beside Next step while sharing calendar validation. Conversation edits reuse the shared dialog and replace by interaction ID to preserve history and derive the last-contact date without duplicate entries.
-- Both CSV sources use the shared parser and existing encrypted contact save/merge path; downloadable samples come from the parser module to keep examples compatible.
+- Both CSV sources use the shared parser and existing contact save/merge path; downloadable samples come from the parser module to keep examples compatible.
 
 - Use the shared accent Button variant for logging, snoozing and importing so action contrast follows the current theme.
 - Use StyledSelect for application and calendar dropdowns so keyboard-accessible menus share theme tokens instead of native system colors.
@@ -55,6 +55,6 @@ use the editor.
 - The Message window owns local edits and template-review drafts; restore placeholders through the shared exact-value helper and persist a template only after explicit review/save.
 - Starter templates are seeded through a protected per-account initialization marker, so edits/deletions survive repeated initialization without restricting custom templates.
 
-- Shared calendar-day no-reply helpers derive and persist Dormant transitions after unlock, with typed outreach and independent revival anchors; Home counts and Contacts filters reuse them to avoid divergent eligibility.
+- Shared calendar-day no-reply helpers derive and persist Dormant transitions after account load, with typed outreach and independent revival anchors; Home counts and Contacts filters reuse them to avoid divergent eligibility.
 
 - Log forms derive immutable kind/outreach metadata from their entry point; edits merge only visible fields into the stored entry so legacy and follow-up classification stays intact.
