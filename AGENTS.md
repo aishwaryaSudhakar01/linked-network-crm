@@ -38,6 +38,7 @@ use the editor.
 - Remembered unlock is opt-in IndexedDB storage of a non-exportable CryptoKey bound to account ID and verifier; restore only after account lookup, and erase on lock/sign-out without storing passphrases.
 - Network screens are split per view (home.tsx, directory.tsx, contact-view.tsx) with shared primitives in ui-kit.tsx; workspace.tsx owns the shell, shortcuts, command palette, and save/undo, so views stay presentational.
 - Contact inline edits merge into a ref of the latest edited copy, because back-to-back saves otherwise overwrite each other with stale data.
+- Next-step completion uses the shared reviewed conversation form and one contact save; clear only the captured step so cancellation or concurrent inline edits cannot lose a deadline.
 - Track skipped optional setup steps and reminder dismissal in owner-scoped profiles, so setup resumes and completion persists across devices.
 - Persist appearance in profiles and a local pre-paint theme mirror; theme mutations cancel stale profile reads so toggling cannot be overwritten.
 - Keep calendar dates ISO in storage and use shared date formatting/input helpers with a Shadcn month/year calendar picker, so browser locale and timezones cannot change their meaning.

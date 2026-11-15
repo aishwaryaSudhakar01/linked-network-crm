@@ -2,6 +2,7 @@ export const STAGES = ['Not contacted','Reached out','Talking','Met','Keep in to
 export const CONNECTIONS = ['Alumni','Classmate','Professor or speaker','Recruiter','Cold outreach','Introduction','Other'];
 export const GOALS = ['Job/referral','Advice','Industry insight','Mentorship','Peer'];
 export const CHANNELS = ['LinkedIn','Email','Coffee','Call','Meeting','Event','Other'];
+export function conversationChannel(channel:string,custom:string){const value=(channel==='Other'?custom:channel).trim();if(!value)throw new Error('Choose a conversation type.');return value;}
 export const CADENCES = ['None','2 weeks','Monthly','Quarterly'];
 export const ASK_TYPES = ['None','Advice call','Intro','Referral'];
 export const ASK_STATUSES = ['Not asked','Planned','Asked','Received','Declined'];
@@ -33,5 +34,9 @@ export function normalizeStage(stage:string):Stage {if(stage==='Replied')return 
 export function migrateContact(c:Contact):Contact{return {...c,stage:normalizeStage(c.stage)};}
 export function startTracking(c:Contact,from=today()):Contact{return c.tracked===false?{...c,tracked:true,tracking_started:from}:c;}
 export function logOutreach(c:Contact,i:Omit<Interaction,'id'>):Contact {const logged=logConversation(c,{...i,kind:'outreach',outreach_type:i.outreach_type??'message',follow_up:c.stage==='Reached out'&&i.outreach_type!=='connection-request'});return {...logged,stage:c.stage==='Not contacted'?'Reached out':c.stage};}
+
+/** Completion is saved with its reviewed history entry, never when the form opens. */
+export function nextStepDraft(c:Contact,from=today()):Omit<Interaction,'id'>{return {date:from,channel:'',summary:c.next_step,meeting_notes:'',kind:'conversation'};}
+export function completeNextStep(c:Contact,i:Omit<Interaction,'id'>,step:Pick<Contact,'next_step'|'next_step_date'>):Contact{const logged=i.kind==='outreach'?logOutreach(c,i):logConversation(c,i);return c.next_step===step.next_step&&c.next_step_date===step.next_step_date?{...logged,next_step:'',next_step_date:''}:logged;}
 
 export function reviveContact(c:Contact,from=today()):Contact{return c.stage==='Dormant'?{...c,stage:'Reached out',revived_at:from,snoozed_until:''}:c;}
