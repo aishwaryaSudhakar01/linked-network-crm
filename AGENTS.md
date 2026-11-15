@@ -54,6 +54,7 @@ use the editor.
 - Message destination visibility, copy-before-open and sent-log drafts live in message-actions; confirmation opens the shared editable log form, so navigation never implies sending.
 - The Message window owns local edits and template-review drafts; restore placeholders through the shared exact-value helper and persist a template only after explicit review/save.
 - Starter templates are seeded through a protected per-account initialization marker, so edits/deletions survive repeated initialization without restricting custom templates.
+- Normalize legacy literal template line breaks at shared read/save/fill/send boundaries and block unresolved square-bracket prompts before Message actions; this preserves editable account copies and prevents unfinished drafts from leaving the app.
 
 - Shared calendar-day no-reply helpers derive and persist Dormant transitions after account load, with typed outreach and independent revival anchors; Home counts and Contacts filters reuse them to avoid divergent eligibility.
 

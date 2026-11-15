@@ -2,7 +2,7 @@ import {supabase} from '@/integrations/supabase/client';
 import type {Database,Json} from '@/integrations/supabase/types';
 import {decodeContact,plainContact,type StoredContact} from './note-storage';
 import {linkedinKey,migrateContact,type Contact} from './contacts';
-import type {Template} from './templates';
+import {normalizeTemplate,type Template} from './templates';
 export type Profile=Database['public']['Tables']['profiles']['Row'];
 export async function readProfile(userId:string){const {data,error}=await supabase.from('profiles').select('*').eq('user_id',userId).single();if(error)throw error;const {data:auth}=await supabase.auth.getUser();return {...data,first_name:data.first_name||auth.user?.user_metadata['first_name']||'',last_name:data.last_name||auth.user?.user_metadata['last_name']||''} as Profile;}
 export async function updateProfile(p:Profile){const {error}=await supabase.from('profiles').update(p).eq('user_id',p.user_id);if(error)throw error;}
@@ -21,5 +21,5 @@ export async function convertNotes(userId:string,key?:CryptoKey|null){
 }
 export async function saveContact(c:Contact,userId:string){const {error}=await supabase.from('contacts').upsert({id:c.id,user_id:userId,linkedin_key:linkedinKey(c.linkedin_url)||null,email_key:c.email.trim().toLowerCase()||null,data:plainContact(c) as unknown as Json});if(error)throw error;}
 export async function removeContact(id:string,userId:string){const {error}=await supabase.from('contacts').delete().eq('id',id).eq('user_id',userId);if(error)throw error;}
-export async function readTemplates(userId:string){const {data,error}=await supabase.from('templates').select('*').eq('user_id',userId).order('name');if(error)throw error;return data as Template[];}
-export async function saveTemplate(t:Template,userId:string){const {error}=await supabase.from('templates').upsert({...t,user_id:userId});if(error)throw error;}
+export async function readTemplates(userId:string){const {data,error}=await supabase.from('templates').select('*').eq('user_id',userId).order('name');if(error)throw error;return data.map(normalizeTemplate);}
+export async function saveTemplate(t:Template,userId:string){const {error}=await supabase.from('templates').upsert({...normalizeTemplate(t),user_id:userId});if(error)throw error;}

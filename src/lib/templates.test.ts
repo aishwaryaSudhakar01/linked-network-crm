@@ -1,0 +1,13 @@
+import {describe,expect,it} from 'vitest';
+import {bracketPrompts,normalizeLineBreaks,normalizeTemplate,safeMessage,fillTemplate,matchesOriginalTemplate,connectionLengthAllowed,type Template} from './templates';
+import {blankContact} from './contacts';
+describe('template preparation',()=>{
+ it('detects all fill-in brackets but excludes missing field markers',()=>{expect(bracketPrompts('[topic] [one thing they said] [] [missing: company]')).toEqual(['[topic]','[one thing they said]','[]']);expect(bracketPrompts('A completed message')).toEqual([]);});
+ for(const text of ['Hi\\n\\nBest,\\nJane','Hi\\r\\n\\r\\nBest,\\r\\nJane','Hi\r\n\r\nBest,\r\nJane','Hi\n\nBest,\nJane'])it(`normalizes ${JSON.stringify(text)} idempotently`,()=>{expect(normalizeLineBreaks(text)).toBe('Hi\n\nBest,\nJane');expect(normalizeLineBreaks(normalizeLineBreaks(text))).toBe('Hi\n\nBest,\nJane');expect(safeMessage(text)).toBe('Hi\n\nBest,\nJane');});
+ it('normalizes storage and filling without deleting bracket prompts',()=>{const template={id:'t',name:'T',type:'Email',subject:'Hello\\nJane',body:'Hi {{first_name}},\\n\\n[topic]'};expect(normalizeTemplate(template).subject).toBe('Hello\nJane');expect(normalizeTemplate(template).body).toBe('Hi {{first_name}},\n\n[topic]');expect(fillTemplate(template.body,{...blankContact(),name:'Jane'},{first_name:'Me',last_name:'',school:'UCLA',calendly_link:''}).text).toBe('Hi Jane,\n\n[topic]');expect(safeMessage('[topic]')).toBe('[topic]');});
+ const original:Template={id:'t',name:'Cold email',type:'Email',subject:'Old subject',body:'Old body\\nBest'};
+ it('matches only exact unchanged originals',()=>{expect(matchesOriginalTemplate({...original},original)).toBe(true);});
+ for(const field of ['name','type','subject','body'] as const)it(`preserves an edited ${field}`,()=>{expect(matchesOriginalTemplate({...original,[field]:'Edited'},original)).toBe(false);});
+ it('excludes the already-edited connection request',()=>{expect(matchesOriginalTemplate({...original,name:'LinkedIn connection request',body:"Hi {{first_name}}, I'm {{my_first_name}}, a student at {{my_school}}. [One line on why them: something they posted, built, or a path you want to understand.] Would be glad to connect."},{...original,name:'LinkedIn connection request',body:"Hi {{first_name}}, I'm {{my_first_name}} at {{my_school}}. I'd love to connect and learn about your work at {{company}}."})).toBe(false);});
+ it('retains the 300 character connection limit',()=>{expect(connectionLengthAllowed('x'.repeat(300))).toBe(true);expect(connectionLengthAllowed('x'.repeat(301))).toBe(false);});
+});
