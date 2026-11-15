@@ -6,4 +6,4 @@ describe('outreach streak',()=>{
   it('includes the current week once the goal is met',()=>{expect(outreachStreak([met('2026-11-10'),met('2026-11-03')],1,'2026-11-11')).toBe(2);});
   it('breaks at a missed week',()=>{expect(outreachStreak([met('2026-10-27')],1,'2026-11-11')).toBe(0);});
 });
-describe('snooze',()=>{it('moves the follow-up 3 days out',()=>{expect(snooze(blankContact(),3,'2026-11-11').next_step_date).toBe('2026-11-14');});});
+describe('snooze',()=>{it('pauses reminders for 3 days without changing the deadline',()=>{const c={...blankContact(),next_step_date:'2026-11-12'};expect(snooze(c,3,'2026-11-11').snoozed_until).toBe('2026-11-14');expect(snooze(c,3,'2026-11-11').next_step_date).toBe('2026-11-12');});});
