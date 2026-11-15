@@ -22,7 +22,10 @@
 - Temporary-account browser flow verified encrypted contact save/reload, messaging/clipboard, outreach history, CSV bulk activation, preference persistence, old Pipeline redirect and desktop/mobile themes; temporary data removed.
 - The requesting user's private notes remain locked in the verification browser; no passphrase was requested or private contact data accessed.
 ## Account audit and cleanup proposal
-- Current live account list: one account, aishwaryasudhakar12@gmail.com; one contact, six templates, one profile, one role, one initialization record, zero feedback submissions. Keep this account and all its data.
-- Current test accounts: zero. No accounts or data were deleted in this audit.
-- Previous inspection returned seven template-owning accounts. Prior temporary verification scripts created privacy-* and tracking-* accounts at example.com and cleaned up their own accounts/data. The current account records cannot establish the names of the six previously counted identities or the exact moment each disappeared. Do not invent that list or claim all six were confirmed tests.
-- Proposed deletion list: none, because no test accounts currently remain. Any future identified cleanup must be listed by exact account and data counts for separate approval before deletion.
+- Current active account list: one account, aishwaryasudhakar12@gmail.com; one contact, six templates, one profile, one role, one initialization record, zero feedback submissions. Preserve all of these.
+- Active test accounts: zero. No accounts or data were deleted in this audit.
+- The previous seven-template-owner count included the owner plus six identities whose sign-in accounts no longer exist. Their leftover data totals 18 contacts and 36 templates (three contacts and six templates each). Emails are no longer available, so individual attribution to test creation cannot be fully verified.
+- Prior test scripts used privacy-* and tracking-* email addresses at example.com and deleted sign-in accounts. Two further deleted identities retain only one initialization marker each.
+- Proposed cleanup, pending explicit approval: remove only the 18 contacts, 36 templates and two initialization markers whose owner ID no longer exists in auth.users; keep the owner's data unchanged. No cleanup code or migration has been executed.
+- Six former template owners: 2dd2b1a2-9bb1-456f-a9db-6b684d4b69fe, 3c9ea30f-e0d4-4006-a366-714365931499, 86c42d42-e2cc-41d5-9924-2d7680049863, a5423313-cd26-4b27-8f91-ea6083454f79, b207a195-aa31-451d-8231-cc8a73074a29, f20a5923-7e05-4508-89cf-83760ff2ae5f.
+- Marker-only former owners: 99a9fba1-c040-4e0e-824d-a750b8407b89, f43d7e03-6e28-4955-bf84-dee3bf600c46.
