@@ -1,30 +1,35 @@
-export const STAGES = ['Not contacted','Reached out','Replied','Met','Ongoing','Dormant'] as const;
+export const STAGES = ['Not contacted','Reached out','Talking','Met','Keep in touch'] as const;
 export const CONNECTIONS = ['Alumni','Classmate','Professor or speaker','Recruiter','Cold outreach','Introduction','Other'];
 export const GOALS = ['Job/referral','Advice','Industry insight','Mentorship','Peer'];
 export const CHANNELS = ['LinkedIn','Email','Coffee','Call','Meeting','Event','Other'];
 export const CADENCES = ['None','2 weeks','Monthly','Quarterly'];
 export const ASK_TYPES = ['None','Advice call','Intro','Referral'];
 export const ASK_STATUSES = ['Not asked','Planned','Asked','Received','Declined'];
-export type Stage = typeof STAGES[number];
-export type Interaction = { id: string; date: string; channel: string; summary: string; meeting_notes: string };
-export type Contact = { id: string; name: string; company: string; title: string; linkedin_url: string; email: string; phone: string; city: string; connection_type: string; connection_types?: string[]; introduced_by: string; met_at: string; goals: string[]; stage: Stage; ask_type: string; ask_status: string; next_step: string; next_step_date: string; reconnect_cadence: string; personal_notes: string; chat_link: string; calendly_link?: string; last_contact: string; created_at: string; interactions: Interaction[] };
+export type Stage = typeof STAGES[number] | 'Dormant';
+export type Interaction = { id: string; date: string; channel: string; summary: string; meeting_notes: string; kind?: 'outreach'|'conversation' };
+export type Contact = { id: string; name: string; company: string; title: string; linkedin_url: string; email: string; phone: string; city: string; connection_type: string; connection_types?: string[]; introduced_by: string; met_at: string; goals: string[]; stage: Stage; ask_type: string; ask_status: string; next_step: string; next_step_date: string; reconnect_cadence: string; personal_notes: string; chat_link: string; calendly_link?: string; last_contact: string; created_at: string; interactions: Interaction[]; tracked?: boolean; tracking_started?: string; snoozed_until?: string };
 /** Preserve legacy single-type contacts while allowing an explicitly empty selection. */
 export function connectionTypes(c:Contact):string[]{return [...new Set(c.connection_types??(c.connection_type?[c.connection_type]:[]))];}
 export function hasConnectionType(c:Contact,type:string){return !type||connectionTypes(c).includes(type);}
 export function today() { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-export function blankContact(): Contact { return {id:crypto.randomUUID(),name:'',company:'',title:'',linkedin_url:'',email:'',phone:'',city:'',connection_type:'Other',introduced_by:'',met_at:'',goals:[],stage:'Not contacted',ask_type:'None',ask_status:'Not asked',next_step:'',next_step_date:'',reconnect_cadence:'None',personal_notes:'',chat_link:'',last_contact:'',created_at:new Date().toISOString(),interactions:[]}; }
+export function blankContact(): Contact { return {id:crypto.randomUUID(),name:'',company:'',title:'',linkedin_url:'',email:'',phone:'',city:'',connection_type:'Other',introduced_by:'',met_at:'',goals:[],stage:'Not contacted',ask_type:'None',ask_status:'Not asked',next_step:'',next_step_date:'',reconnect_cadence:'None',personal_notes:'',chat_link:'',last_contact:'',created_at:new Date().toISOString(),interactions:[],tracked:true}; }
 export function dueDate(c: Contact) { if(c.next_step_date) return c.next_step_date; const n: Record<string,number>={'2 weeks':14,Monthly:30,Quarterly:90}; const days=n[c.reconnect_cadence]; if(!days||!c.last_contact)return ''; const d=new Date(c.last_contact+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10); }
 export function daysUntil(date:string,from=today()) {return Math.round((Date.parse(date+'T12:00:00Z')-Date.parse(from+'T12:00:00Z'))/86400000);}
-export function reminderStatus(c:Contact,from=today()) {const date=dueDate(c);if(!date)return undefined;const days=daysUntil(date,from);if(!Number.isFinite(days)||days>2)return undefined;return {days,label:days<0?`overdue by ${-days} ${days===-1?'day':'days'}`:days===0?'due':`due in ${days} ${days===1?'day':'days'}`};}
+export function reminderStatus(c:Contact,from=today()) {const date=c.next_step_date;if(!date||c.tracked===false||(c.snoozed_until&&c.snoozed_until>from))return undefined;const days=daysUntil(date,from);if(!Number.isFinite(days)||days>1)return undefined;return {days,label:days<0?`Log it and send a thank-you · overdue by ${-days} ${days===-1?'day':'days'}`:days===0?'due':`due in ${days} ${days===1?'day':'days'}`};}
 export function editConversation(c:Contact,interaction:Interaction):Contact {if(!c.interactions.some(i=>i.id===interaction.id))throw new Error('Conversation no longer exists.');const interactions=c.interactions.map(i=>i.id===interaction.id?interaction:i).sort((a,b)=>b.date.localeCompare(a.date));return {...c,interactions,last_contact:interactions[0]?.date??''};}
-export function logConversation(c:Contact,i:Omit<Interaction,'id'>,_from=today()):Contact {const interactions=[{...i,id:crypto.randomUUID()},...c.interactions].sort((a,b)=>b.date.localeCompare(a.date));return {...c,interactions,last_contact:interactions[0]?.date??'',stage:c.stage==='Not contacted'?'Reached out':c.stage==='Reached out'?'Replied':c.stage};}
+export function logConversation(c:Contact,i:Omit<Interaction,'id'>,_from=today()):Contact {const interactions=[{...i,kind:i.kind??'conversation',id:crypto.randomUUID()},...c.interactions].sort((a,b)=>b.date.localeCompare(a.date));return {...c,interactions,last_contact:interactions[0]?.date??'',stage:c.stage==='Not contacted'?'Reached out':c.stage==='Reached out'?'Talking':c.stage,snoozed_until:''};}
 export function chatHref(s:string|undefined){if(!s)return undefined;try{const u=new URL(s);return ['http:','https:'].includes(u.protocol)?u.href:undefined;}catch{return undefined;}}
 export function linkedinKey(s:string){const url=chatHref(s);if(!url)return '';const u=new URL(url);return (u.hostname.replace(/^www\./,'')+u.pathname.replace(/\/+$/,'')).toLowerCase();}
 export function findDuplicate(list:Contact[],c:Contact){const k=linkedinKey(c.linkedin_url);return (k?list.find(x=>linkedinKey(x.linkedin_url)===k):undefined)??(c.email?list.find(x=>x.email.trim().toLowerCase()===c.email.trim().toLowerCase()):undefined);}
 export function mergeBlanks(existing:Contact,incoming:Contact):Contact{const result={...existing};for(const field of ['name','company','title','linkedin_url','email','phone','city','met_at','chat_link'] as const){if(!result[field])result[field]=incoming[field];}return result;}
 export function weeklyOutreach(list:Contact[],from=today()){const d=new Date(from+'T12:00:00Z');d.setUTCDate(d.getUTCDate()-((d.getUTCDay()+6)%7));const start=d.toISOString().slice(0,10);return list.filter(c=>c.interactions.some(i=>i.date>=start&&i.date<=from)).length;}
 export function addDays(date:string,n:number){const d=new Date(date+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10);}
-/** Push a follow-up out by `days` from today. */
-export function snooze(c:Contact,days=3,from=today()):Contact{return {...c,next_step_date:addDays(from,days)};}
+/** Pause reminders without changing deadlines or activity. */
+export function snooze(c:Contact,days=3,from=today()):Contact{return {...c,snoozed_until:addDays(from,days)};}
 /** Consecutive weeks (Mon–Sun) where distinct contacts reached met the goal. The current week counts only once met. */
 export function outreachStreak(list:Contact[],goal:number,from=today()){let streak=0;let end=from;const thisWeek=weeklyOutreach(list,from);if(thisWeek>=goal)streak++;const d=new Date(from+'T12:00:00Z');d.setUTCDate(d.getUTCDate()-((d.getUTCDay()+6)%7)-1);end=d.toISOString().slice(0,10);for(let i=0;i<520;i++){if(weeklyOutreach(list,end)<goal)break;streak++;end=addDays(end,-7);}return streak;}
+
+export function normalizeStage(stage:string):Stage {if(stage==='Replied')return 'Talking';if(stage==='Ongoing')return 'Keep in touch';return stage==='Dormant'||STAGES.some(s=>s===stage)?stage as Stage:'Not contacted';}
+export function migrateContact(c:Contact):Contact{return {...c,stage:normalizeStage(c.stage)};}
+export function startTracking(c:Contact,from=today()):Contact{return c.tracked===false?{...c,tracked:true,tracking_started:from}:c;}
+export function logOutreach(c:Contact,i:Omit<Interaction,'id'>):Contact {const logged=logConversation(c,{...i,kind:'outreach'});return {...logged,stage:c.stage==='Not contacted'?'Reached out':c.stage};}
