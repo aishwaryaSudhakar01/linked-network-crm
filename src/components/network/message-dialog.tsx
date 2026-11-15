@@ -34,7 +34,7 @@ export function MessageDialog({contact,profile,templates,onClose,onSave,onTempla
   setError('');setActing(true);
   try{
    let url:string|undefined;
-   if(action==='gmail'){const draft=new URL('https://mail.google.com/mail/');draft.search=new URLSearchParams({view:'cm',fs:'1',to:destinations.email??'',su:subject,body:safeMessage(body)}).toString();url=draft.href;}
+   if(action==='gmail'){const draft=new URL('https://mail.google.com/mail/');draft.search=new URLSearchParams({tf:'cm',to:destinations.email??'',su:subject,body:safeMessage(body)}).toString();url=draft.href;}
    else if(action==='chat')url=destinations.chat;else if(action==='linkedin')url=destinations.linkedin;
    const open=(href:string)=>{window.open(href,'_blank','noopener,noreferrer');};
    if(action==='gmail'&&url)open(url);else await copyThenOpen(safeMessage(body),url,text=>navigator.clipboard.writeText(text),()=>toast.success('Message copied'),open);
