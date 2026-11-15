@@ -56,3 +56,5 @@ use the editor.
 - Starter templates are seeded through a protected per-account initialization marker, so edits/deletions survive repeated initialization without restricting custom templates.
 
 - Shared calendar-day no-reply helpers derive and persist Dormant transitions after unlock, with typed outreach and independent revival anchors; Home counts and Contacts filters reuse them to avoid divergent eligibility.
+
+- Log forms derive immutable kind/outreach metadata from their entry point; edits merge only visible fields into the stored entry so legacy and follow-up classification stays intact.
