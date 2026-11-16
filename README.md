@@ -1,56 +1,49 @@
 # LinkedNetwork
 
-Build a lightweight personal relationship manager using the details below.
+A networking CRM for students. Track the people you have talked to, see who to follow up with, and message them without losing context.
 
-MAKE IT YOURS
+**Live app:** https://linked-network-crm.lovable.app
 
-My context: early career job seeker - currently a student at UCLA Anderson
+## What it does
 
-What I want help with: Maintaining a roster of everyone I've spoken with, be it alumni, employees at target companies, and so on - remembering conversations and following up thoughtfully
+- **Contacts.** Name, company, title, email, LinkedIn, where you met, connection types, notes, chat link, and next step with a due date.
+- **Stages.** Not contacted, Reached out, Talking, Met, Keep in touch. Dormant is set by the app.
+- **Reminders.** Each stage has a rule, such as 7 days after you reach out. Day counts are editable in Settings and show on Home.
+- **Dormant.** A contact you reached out to who does not reply goes Dormant after 14 days by default. Revive one or many at once.
+- **Message window.** Pick a template, edit it, then Copy, Continue chat, open a Gmail draft, or open their LinkedIn profile. Placeholders such as `{{first_name}}` fill in automatically, and `[bracketed]` lines must be completed before you can copy.
+- **Log conversations.** Where, date, summary, and meeting notes, kept as a timeline on each contact.
+- **Import.** LinkedIn export or your own CSV. Imported contacts get no reminders until you start tracking them.
+- **Feedback.** An in-app Give feedback button, with an admin view for triage.
 
-Name, Contact info, Company, Title
+## What it does not do
 
-How do i know them: alumni, linkedin cold outreach, guest lecturer, client, investor, other - let user fill up
+- No AI-written messages.
+- No automatic sending. Every message goes out from your own Gmail or LinkedIn.
+- No access to your calendar or inbox.
 
-Conversation source (multi-select) - Linkedin, Email, 
+## Privacy
 
-Default reconnect timing: NUMBER OF DAYS — let this be user dependant - for every contact
+Each account only reads and writes its own rows, enforced with row-level security in the database. The admin role manages feedback and cannot open another user's contacts.
 
-Details I want to remember: e.g., where we met, shared interests, current projects, and next steps - basically a brain dump of contacts
+## Stack
 
-Colors and style: Use @connector:notion:"Notion" colours
+TanStack Start, React 19, TypeScript, Tailwind CSS 4, shadcn/ui, Lovable Cloud (Postgres), Vitest.
 
-WHAT TO BUILD
-
-A searchable, filterable contact directory showing name, organization, tags, where we met, and last-contact date.
-
-An expandable contact profile with contact details, conversation notes, interests, and a next-check-in date.
-
-A “Reach out soon” section based on scheduled check-ins or my default reconnect timing.
-
-A “Log catch-up” button to record a conversation and update the last-contact date.
-
-Keep it warm, simple, and easy to maintain. Reminders should appear inside the app; don’t send messages automatically. Start with sample data and explain the storage and access setup before I add real contact information.
-
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://linked-network-crm.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/a0d6af76-d2cd-4cd1-8446-e22fa6c7bf97).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+## Run locally
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+git clone https://github.com/aishwaryaSudhakar01/linked-network-crm.git
+cd linked-network-crm
+npm install
 npm run dev
 ```
+
+Run the tests with `npm test`.
+
+## Roadmap
+
+See [roadmap.md](roadmap.md) for what has shipped and what is still open.
+
+## Built with
+
+[Lovable](https://lovable.dev). Changes made in Lovable commit to this repository, and pushes to `main` sync back.
