@@ -24,7 +24,7 @@ export function HomeView({contacts,profile,onOpen,onQuick,onImport,onMessage,onL
   const [now,setNow]=useState(()=>new Date());
   useEffect(()=>{const timer=setInterval(()=>setNow(new Date()),60000);return()=>clearInterval(timer);},[]);
   const hour=now.getHours();
-  const greeting=hour<12?'Good morning':hour<18?'Good afternoon':'Good evening';
+  const greeting=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
   const snooze=async(c:Contact)=>{setDone(d=>[...d,c.id]);await new Promise(r=>setTimeout(r,450));try{await onSnooze(c);}finally{setDone(d=>d.filter(x=>x!==c.id));}};
   const ring=Math.min(1,progress/goal)*213.6;
   return <div className="space-y-8">
