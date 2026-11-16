@@ -1,4 +1,5 @@
 import {PasswordInput} from '@/components/network/password-input';
+import {checkAccountExists} from '@/lib/auth-check.functions';
 import {createFileRoute,useNavigate} from '@tanstack/react-router';
 import {useState} from 'react';
 import {Network,ArrowLeft} from 'lucide-react';
