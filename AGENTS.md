@@ -61,3 +61,5 @@ use the editor.
 
 - Log forms derive immutable kind/outreach metadata from their entry point; edits merge only visible fields into the stored entry so legacy and follow-up classification stays intact.
 - Home recent activity uses the shared calendar-day conversation grouping helper, not contact metadata or an entry-count limit, to keep date filtering and grouping testable without changing history.
+
+- Home uses independent task and summary columns with a shared initial card baseline; additional tasks must not stretch or reposition Weekly goal or Stages.
