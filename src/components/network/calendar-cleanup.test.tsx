@@ -38,7 +38,7 @@ describe('Calendar cleanup compatibility',()=>{
   expect(open).toHaveBeenCalledTimes(1);
   const url=new URL(String(open.mock.calls[0]?.[0]));
   expect(url.origin+url.pathname).toBe('https://calendar.google.com/calendar/render');
-  expect(Object.fromEntries(url.searchParams)).toEqual({action:'TEMPLATE',text:'Coffee chat: Alex and Jane',details:'Discuss opportunities',add:'jane@example.com',dates:'20261115/20261116'});
+  expect(Object.fromEntries(url.searchParams)).toEqual({action:'TEMPLATE',text:'Jane / Alex - Coffee chat',details:'Discuss opportunities',add:'jane@example.com',dates:'20261115/20261116'});
   expect(open.mock.calls[0]?.slice(1)).toEqual(['_blank','noopener,noreferrer']);
   expect(onSave).not.toHaveBeenCalled();
  });
