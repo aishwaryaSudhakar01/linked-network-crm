@@ -4,12 +4,12 @@ import {formatDate} from '@/lib/dates';
 import {pendingSetup} from '@/lib/setup';
 import {useState} from 'react';
 import {Link} from '@tanstack/react-router';
-import {Check,MessageSquare,NotebookPen,AlarmClock,Plus,Users,Sparkles,X} from 'lucide-react';
+import {Check,MessageSquare,NotebookPen,AlarmClock,Plus,Users,X} from 'lucide-react';
 import {ImportTrigger} from './import-trigger';
 import {Button} from '@/components/ui/button';
 import {STAGES,addDays,daysUntil,dueDate,reminderStatus,outreachStreak,today,weeklyOutreach,type Contact} from '@/lib/contacts';
 import type {Profile} from '@/lib/network-store';
-import {Avatar,ChannelIcon,EmptyState,relTime} from './ui-kit';
+import {AddHint,Avatar,ChannelIcon,EmptyState,relTime} from './ui-kit';
 const STAGE_BAR:Record<string,string>={'Not contacted':'bg-tag-gray-fg','Reached out':'bg-tag-blue-fg','Talking':'bg-sunshine','Met':'bg-tag-purple-fg','Keep in touch':'bg-ongoing','Dormant':'bg-tag-brown-fg'};
 type Props={contacts:Contact[];profile:Profile;onOpen:(id:string)=>void;onQuick:()=>void;onImport:()=>void;onMessage:(c:Contact)=>void;onLog:(c:Contact)=>void;onSnooze:(c:Contact)=>Promise<void>;onProfile:(p:Profile)=>Promise<void>;onStage:(s:string)=>void;onOutreach:(filter:'follow-up'|'going-dormant')=>void};
 export function HomeView({contacts,profile,onOpen,onQuick,onImport,onMessage,onLog,onSnooze,onStage,onOutreach,onProfile}:Props){
@@ -27,6 +27,7 @@ export function HomeView({contacts,profile,onOpen,onQuick,onImport,onMessage,onL
   return <div className="space-y-8">
     {!!pending.length&&<section className="rounded-lg border border-border bg-card p-4"><div className="flex items-center justify-between"><h2 className="text-sm font-semibold">Finish setting up</h2><Button variant="ghost" size="icon" aria-label="Dismiss setup reminder" onClick={()=>void onProfile({...profile,setup_dismissed:true})}><X/></Button></div><div className="mt-2 flex flex-wrap gap-2">{pending.includes(2)&&<Button asChild variant="outline" size="sm"><Link to="/settings">About you</Link></Button>}{pending.includes(4)&&<Button asChild variant="outline" size="sm"><Link to="/templates">Templates</Link></Button>}{pending.includes(5)&&<Button variant="outline" size="sm" onClick={onQuick}>First contacts</Button>}</div></section>}
     <header><p className="text-sm text-muted-foreground">{formatDate(t)}</p><h1 className="mt-1 text-[28px] font-semibold leading-tight">{greeting}, {profile.first_name||'there'}</h1></header>
+    <div className="mt-6"><AddHint/></div>
     {!contacts.length?<EmptyState icon={<Users className="size-6"/>} text="Add the people you've met to start tracking follow-ups." action={<div className="flex flex-wrap gap-2"><Button onClick={onQuick}><Plus/>Add contact</Button><ImportTrigger onImport={onImport}/></div>}/>:<>
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
       <section aria-labelledby="today-h" className="order-1 flex flex-col lg:order-1"><h2 id="today-h" className="mb-3 flex items-center gap-2 text-sm font-semibold">Today <span className="rounded bg-sunshine px-1.5 py-0.5 font-normal text-highlight-foreground">{attention}</span></h2>{lines.length>0&&<div className="mb-4 space-y-2">{lines.map(line=><Button key={line.filter} variant="ghost" className="h-auto w-full justify-start whitespace-normal px-0 text-left text-sm" onClick={()=>onOutreach(line.filter)}>{line.label}</Button>)}</div>}
@@ -40,5 +41,4 @@ export function HomeView({contacts,profile,onOpen,onQuick,onImport,onMessage,onL
     <section aria-labelledby="week-h"><h2 id="week-h" className="mb-3 text-sm font-semibold">This week</h2><div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">{week.map(d=>{const items=contacts.filter(c=>c.stage!=='Dormant'&&c.tracked!==false&&c.next_step_date===d);return <div key={d} className="min-h-24 rounded-lg border border-border bg-card p-3"><p className="mb-2 text-xs text-muted-foreground">{formatDate(d)}</p><ul className="space-y-1">{items.map(c=><li key={c.id}><button onClick={()=>onOpen(c.id)} className="flex w-full items-center gap-1.5 truncate rounded text-left text-xs hover:underline"><Avatar name={c.name} size="sm"/><span className="truncate">{c.name}</span></button></li>)}</ul></div>;})}</div></section>
     <section aria-labelledby="act-h"><h2 id="act-h" className="mb-3 text-sm font-semibold">Recent activity</h2>{!recentDays.length?<p className="text-sm text-muted-foreground">No conversations logged in the last 7 days.</p>:<ol className="relative ml-2.5 space-y-1 border-l border-border">{recentDays.map(g=>{const first=g.items[0];if(!first)return null;return <li key={g.date} className="relative pl-6"><span className="absolute -left-[13px] top-1.5 flex size-6 items-center justify-center rounded-full border border-border bg-card text-muted-foreground">{g.items.length>1?<Users className="size-3"/>:<ChannelIcon channel={first.i.channel} className="size-3"/>}</span><div className="flex flex-wrap items-center gap-1.5 px-2 py-1.5">{g.items.map(({c})=><Button variant="ghost" size="sm" key={c.id} onClick={()=>onOpen(c.id)} className="h-auto rounded bg-muted px-2 py-0.5 text-sm font-medium text-foreground transition-colors duration-150 hover:bg-accent">{c.name}</Button>)}<span className="ml-auto shrink-0 text-xs text-muted-foreground">{formatDate(g.date)}</span></div></li>;})}</ol>}</section>
     </>}
-    {!!contacts.length&&!due.length&&!stale.length&&<p className="flex items-center gap-2 text-xs text-muted-foreground"><Sparkles className="size-3.5"/>Press N to add someone new.</p>}
   </div>;}
