@@ -2,7 +2,7 @@ import {reminders,outreachLines,matchesOutreach,upcomingSteps,recentConversation
 import {useToday} from '@/hooks/use-today';
 import {formatDate} from '@/lib/dates';
 import {pendingSetup} from '@/lib/setup';
-import {useState} from 'react';
+import {useEffect,useState} from 'react';
 import {Link} from '@tanstack/react-router';
 import {Check,MessageSquare,NotebookPen,AlarmClock,Plus,Users,X} from 'lucide-react';
 import {ImportTrigger} from './import-trigger';
@@ -21,7 +21,10 @@ export function HomeView({contacts,profile,onOpen,onQuick,onImport,onMessage,onL
   const upcoming=upcomingSteps(contacts,t,3);
   const recentDays=recentConversationDays(contacts,t);
   const stale:Contact[]=[];
-  const greeting=new Date().getHours()<12?'Good morning':new Date().getHours()<18?'Good afternoon':'Good evening';
+  const [now,setNow]=useState(()=>new Date());
+  useEffect(()=>{const timer=setInterval(()=>setNow(new Date()),60000);return()=>clearInterval(timer);},[]);
+  const hour=now.getHours();
+  const greeting=hour<12?'Good morning':hour<18?'Good afternoon':'Good evening';
   const snooze=async(c:Contact)=>{setDone(d=>[...d,c.id]);await new Promise(r=>setTimeout(r,450));try{await onSnooze(c);}finally{setDone(d=>d.filter(x=>x!==c.id));}};
   const ring=Math.min(1,progress/goal)*213.6;
   return <div className="space-y-8">
