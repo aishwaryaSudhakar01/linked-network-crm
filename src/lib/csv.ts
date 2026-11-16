@@ -4,7 +4,7 @@ import {parseDate} from './dates';
 export type ImportFormat='linkedin'|'general';
 export const CSV_SAMPLES:Record<ImportFormat,string>={
  linkedin:'First Name,Last Name,URL,Email Address,Company,Position,Connected On\nJane,Doe,https://www.linkedin.com/in/jane-doe,jane@example.com,Example Company,Analyst,01 Nov 2026\n',
- general:'Name,Email,Phone,Company,Title,LinkedIn URL,Chat Link,City,Where We Met,Last Contact,Next Step Date,Notes\nJane Doe,jane@example.com,555-0100,Example Company,Analyst,https://www.linkedin.com/in/jane-doe,https://mail.google.com/mail/u/0/#inbox,Los Angeles,Alumni coffee chat,11/01/2026,11/20/2026,"Interested in product strategy, follow up after finals"\n',
+ general:'Name,Email,Company,Title,LinkedIn URL,Chat Link,Calendly Link,Last Contact,Next Step Date,Notes\nJane Doe,jane@example.com,Example Company,Analyst,https://www.linkedin.com/in/jane-doe,https://mail.google.com/mail/u/0/#inbox/abc123,https://calendly.com/jane-doe/coffee,11/01/2026,11/20/2026,"Interested in product strategy, follow up after finals"\n',
 };
 const normalize=(s:string)=>s.trim().toLowerCase().replace(/[_\s-]+/g,' ');
 export function parseContactsCsv(text:string,format:ImportFormat):Contact[]{
@@ -19,7 +19,7 @@ export function parseContactsCsv(text:string,format:ImportFormat):Contact[]{
  const rows=parsed.data.map((r,index)=>{
   const get=(...keys:string[])=>{for(const key of keys){const value=r[key]?.trim();if(value)return value;}return '';};
   const date=(...keys:string[])=>{const value=get(...keys);if(!value)return '';const iso=/^(\d{4})-(\d{2})-(\d{2})$/.exec(value);const parsedDate=parseDate(iso?`${iso[2]}/${iso[3]}/${iso[1]}`:value);if(!parsedDate)throw new Error(`Row ${index+2}: ${keys[0]} must be a valid MM/DD/YYYY date.`);return parsedDate;};
-  return {...blankContact(),tracked:false,name:get('name')||[get('first name'),get('last name')].filter(Boolean).join(' '),linkedin_url:get('linkedin url','url'),email:get('email','email address'),company:get('company','organization'),title:get('title','position','job title'),phone:get('phone','phone number'),city:get('city'),chat_link:get('chat link'),met_at:format==='linkedin'?(get('connected on')?`LinkedIn, ${get('connected on')}`:''):get('where we met','met at'),personal_notes:get('notes','personal notes'),last_contact:format==='general'?date('last contact','last contact date'):'',next_step_date:format==='general'?date('next step date','next check in date'):'',next_step:get('next step')};
+  return {...blankContact(),tracked:false,name:get('name')||[get('first name'),get('last name')].filter(Boolean).join(' '),linkedin_url:get('linkedin url','url'),email:get('email','email address'),company:get('company','organization'),title:get('title','position','job title'),phone:get('phone','phone number'),city:get('city'),chat_link:get('chat link'),calendly_link:get('calendly link','calendly'),met_at:format==='linkedin'?(get('connected on')?`LinkedIn, ${get('connected on')}`:''):get('where we met','met at'),personal_notes:get('notes','personal notes'),last_contact:format==='general'?date('last contact','last contact date'):'',next_step_date:format==='general'?date('next step date','next check in date'):'',next_step:get('next step')};
  }).filter(c=>c.name);
  if(!rows.length)throw new Error('No named contacts were found in this CSV.');
  return rows;
