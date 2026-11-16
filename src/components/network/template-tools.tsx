@@ -9,6 +9,7 @@ import {Copy,ExternalLink,Plus,Pencil,Trash2} from 'lucide-react';
 import {toast} from 'sonner';
 import {Button} from '@/components/ui/button';
 import {Modal,Field,inputClass} from './shared';
+import {AddHint} from './ui-kit';
 import {fillTemplate,VARIABLES,type Template} from '@/lib/templates';
 import {chatHref,logOutreach,today,type Contact} from '@/lib/contacts';
 import {supabase} from '@/integrations/supabase/client';

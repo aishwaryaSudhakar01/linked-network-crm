@@ -2,6 +2,7 @@ import {timingFor,validTiming,validTimingPair,type ReminderTiming} from '@/lib/r
 import {StyledSelect} from '@/components/ui/styled-select';
 import {completeSetup} from '@/lib/setup';
 import {PasswordInput} from './password-input';
+import {AddHint} from './ui-kit';
 import {useEffect,useState} from 'react';
 import {toast} from 'sonner';
 import {Button} from '@/components/ui/button';

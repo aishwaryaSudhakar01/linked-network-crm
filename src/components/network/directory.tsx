@@ -2,7 +2,7 @@ import {matchesOutreach,noReply,type ReminderTiming,type OutreachFilter} from '@
 import {useToday} from '@/hooks/use-today';
 import {StyledSelect} from '@/components/ui/styled-select';
 import {useEffect,useState} from 'react';
-import {Search,Plus,X,LayoutGrid,Rows3,MessageSquare,NotebookPen,ExternalLink,Users,Sparkles} from 'lucide-react';
+import {Search,Plus,X,LayoutGrid,Rows3,MessageSquare,NotebookPen,ExternalLink,Users} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {CONNECTIONS,STAGES,startTracking,hasConnectionType,chatHref,dueDate,type Contact} from '@/lib/contacts';
 import {formatDate} from '@/lib/dates';
